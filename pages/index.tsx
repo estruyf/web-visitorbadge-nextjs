@@ -73,14 +73,14 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta property="twitter:card" content="summary_large_image" />
 
-        <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.visitors}?user=estruyf&repo=github-visitors-badge&countColor=%2320385C&label=Create your visitor badge`} />
-        <meta property="og:image" content={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.visitors}?user=estruyf&repo=github-visitors-badge&countColor=%2320385C&label=Create your visitor badge`} />
+        <meta property="twitter:image" content={`https://visitorbadge.io/preview.png`} />
+        <meta property="og:image" content={`https://visitorbadge.io/preview.png`} />
 
         <meta property="twitter:url" content="" />
         <meta property="og:url" content="" />
       </Head>
 
-      <Page>
+      <Page labelColor={labelColor} countColor={countColor}>
         <div>
           <div className="pb-4 border-b border-gray-200">
             <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor badge</h3>
