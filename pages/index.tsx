@@ -1,147 +1,202 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import React from 'react'
-import 'tailwindcss/tailwind.css'
-import { Page } from '../components/Page'
+import React, { SyntheticEvent, useState } from 'react';
+import 'tailwindcss/tailwind.css';
+import { Page } from '../components/Page';
+import { ColorPicker } from '../components/ColorPicker';
+import { API } from '../constants/API';
+
+const defaultLabelColor = "#555555";
 
 export default function Home() {
-  
+  const [ username, setUsername ] = useState('');
+  const [ repository, setRepository ] = useState('');
+  const [ label, setLabel ] = useState('');
+  const [ labelColor, setLabelColor ] = useState(defaultLabelColor);
+  const [ countColor, setCountColor ] = useState('#263759');
+
+  const usernameChange = (e: SyntheticEvent<HTMLInputElement>) => {
+    setUsername(e.currentTarget.value || "");
+  };
+
+  const repoChange = (e: SyntheticEvent<HTMLInputElement>) => {
+    setRepository(e.currentTarget.value || "");
+  };
+
+  const labelChange = (e: SyntheticEvent<HTMLInputElement>) => {
+    setLabel(e.currentTarget.value || "");
+  };
+
+  const getQueryString = () => {
+    let query = `?user=${username}&repo=${repository}`;
+      
+    if (label) {
+      query += `&label=${label}`;
+    }
+
+    if (labelColor !== defaultLabelColor) {
+      query += `&labelColor=${labelColor.replace("#", "%23")}`;
+    }
+
+    if (countColor) {
+      query += `&countColor=${countColor.replace("#", "%23")}`;
+    }
+
+    return query;
+  };
+
+  const getMarkdownCode = () => {
+    if (username && repository) {
+      const query = getQueryString();
+      return `![](${process.env.NEXT_PUBLIC_VISITOR_API}/${API.visitors}${query})`;
+    }
+    return '';
+  };
+
+  const getLink = () => {
+    if (username && repository) {
+      const query = getQueryString();
+      return `${process.env.NEXT_PUBLIC_VISITOR_API}/${API.visitors}${query}`;
+    }
+    return '';
+  };
+
   return (
-    <Page>
-      <h2>How to use?</h2>
-      <h2>Render the output</h2>
-      - Markdown
-      - HTML
+    <>
+      <Head>
+        <title>Create your visitor badge</title>
+        <meta name="description" content="Create your visitor badge which you can use on your website or GitHub profile." />
+        <meta property="og:description" content="Create your visitor badge which you can use on your website or GitHub profile." />
+        <meta property="twitter:description" content="Create your visitor badge which you can use on your website or GitHub profile." />
 
-      - Function: Count how many that are using the service
-      - Function: Create a function with a 7 day graph
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_VISITOR_API} />
+        
+        <meta property="og:type" content="website" />
+        <meta property="twitter:card" content="summary_large_image" />
 
+        <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.visitors}?user=estruyf&repo=github-visitors-badge&countColor=%2320385C&label=Create your visitor badge`} />
+        <meta property="og:image" content={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.visitors}?user=estruyf&repo=github-visitors-badge&countColor=%2320385C&label=Create your visitor badge`} />
 
-      <form action="#" method="POST">
-          <div className="shadow sm:rounded-md sm:overflow-hidden">
-            <div className="bg-white py-6 px-4 space-y-6 sm:p-6">
-              <div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>
-                <p className="mt-1 text-sm text-gray-500">Use a permanent address where you can recieve mail.</p>
+        <meta property="twitter:url" content="" />
+        <meta property="og:url" content="" />
+      </Head>
+
+      <Page>
+        <div>
+          <div className="pb-4 border-b border-gray-200">
+            <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor badge</h3>
+            <p className="mt-2 max-w-4xl text-sm text-gray-500">
+              Fill in the following form to get your visitor badge Markdown and image URL.
+            </p>
+          </div>
+
+          <div className={`my-4 mb-12`}>
+            <div className="grid grid-cols-6 gap-6">
+              <div className="col-span-6 sm:col-span-3">
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                  Username/Company
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  autoComplete="username"
+                  value={username}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Example: estruyf"
+                  onChange={usernameChange}
+                />
               </div>
 
-              <div className="grid grid-cols-6 gap-6">
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                    First name
-                  </label>
-                  <input
-                    type="text"
-                    name="first-name"
-                    id="first-name"
-                    autoComplete="given-name"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                    Last name
-                  </label>
-                  <input
-                    type="text"
-                    name="last-name"
-                    id="last-name"
-                    autoComplete="family-name"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-4">
-                  <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <input
-                    type="text"
-                    name="email-address"
-                    id="email-address"
-                    autoComplete="email"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                    Country / Region
-                  </label>
-                  <select
-                    id="country"
-                    name="country"
-                    autoComplete="country"
-                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                  </select>
-                </div>
-
-                <div className="col-span-6">
-                  <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                    Street address
-                  </label>
-                  <input
-                    type="text"
-                    name="street-address"
-                    id="street-address"
-                    autoComplete="street-address"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                    State / Province
-                  </label>
-                  <input
-                    type="text"
-                    name="state"
-                    id="state"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                  <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-                    ZIP / Postal
-                  </label>
-                  <input
-                    type="text"
-                    name="postal-code"
-                    id="postal-code"
-                    autoComplete="postal-code"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
+              <div className="col-span-6 sm:col-span-3">
+                <label htmlFor="repository" className="block text-sm font-medium text-gray-700">
+                  Repository name
+                </label>
+                <input
+                  type="text"
+                  name="repository"
+                  id="repository"
+                  autoComplete="repository"
+                  value={repository}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Example: github-visitors-badge"
+                  onChange={repoChange}
+                />
               </div>
-            </div>
-            <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-              <button
-                type="submit"
-                className="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Save
-              </button>
+
+              <div className="col-span-6 sm:col-span-2">
+                <label htmlFor="label" className="block text-sm font-medium text-gray-700">
+                  Label
+                </label>
+                <input
+                  type="text"
+                  name="label"
+                  id="label"
+                  value={label}
+                  autoComplete="label"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Default: VISITORS"
+                  onChange={labelChange}
+                />
+              </div>
+
+              <ColorPicker color={labelColor} title={`Label background`} updateColor={(color) => setLabelColor(color)} />
+
+              <ColorPicker color={countColor} title={`Count background`} updateColor={(color) => setCountColor(color)} />
             </div>
           </div>
-        </form>
-    </Page>
+        </div>
+
+        <div>
+          <div className="pb-4 border-b border-gray-200">
+            <h3 className="text-xl leading-6 font-medium text-gray-900">The code for you to use</h3>
+            <p className="mt-2 max-w-4xl text-sm text-gray-500">
+              You can use the generated Markdown code or image URL in any of your projects.
+            </p>
+          </div>
+
+          <div className="my-4 grid grid-cols-6 gap-6">
+            <div className="col-span-6">
+              <label htmlFor="markdown" className="block text-sm font-medium text-gray-700">
+                Markdown
+              </label>
+              <input
+                type="text"
+                name="markdown"
+                id="markdown"
+                value={getMarkdownCode()}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                disabled
+              />
+            </div>
+            <div className="col-span-6">
+              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+                Image URL
+              </label>
+              <input
+                type="text"
+                name="imageUrl"
+                id="imageUrl"
+                value={getLink()}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                disabled
+              />
+            </div>
+
+            {
+              getLink() && (
+                <div className="col-span-6">
+                  <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+                    Result
+                  </label>
+      
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={getLink()} alt="Visitor badge" />
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </Page>
+    </>
   )
 }

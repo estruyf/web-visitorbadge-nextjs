@@ -7,12 +7,12 @@ export interface IPageProps {}
 
 export const Page: React.FunctionComponent<IPageProps> = ({ children }: React.PropsWithChildren<IPageProps>) => {
   return (
-    <div className="bg-white">
+    <div className="bg-white flex flex-col h-screen">
       <Header />
 
       <CTA />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6">
+      <main className={`mt-12 max-w-7xl px-4 sm:px-6 flex-grow`}>
         {children}
       </main>
 
