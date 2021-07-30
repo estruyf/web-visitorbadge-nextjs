@@ -4,6 +4,7 @@ import 'tailwindcss/tailwind.css';
 import { Page } from '../components/Page';
 import { ColorPicker } from '../components/ColorPicker';
 import { API } from '../constants/API';
+import { StyleDropdown } from '../components/StyleDropdown';
 
 const defaultLabelColor = "#555555";
 
@@ -13,6 +14,7 @@ export default function Home() {
   const [ label, setLabel ] = useState('');
   const [ labelColor, setLabelColor ] = useState(defaultLabelColor);
   const [ countColor, setCountColor ] = useState('#263759');
+  const [ badgeStyle, setBadgeStyle ] = useState('default');
 
   const usernameChange = (e: SyntheticEvent<HTMLInputElement>) => {
     setUsername(e.currentTarget.value || "");
@@ -39,6 +41,10 @@ export default function Home() {
 
     if (countColor) {
       query += `&countColor=${countColor.replace("#", "%23")}`;
+    }
+
+    if (badgeStyle !== "default") {
+      query += `&style=${badgeStyle}`;
     }
 
     return query;
@@ -80,7 +86,7 @@ export default function Home() {
         <meta property="og:url" content="" />
       </Head>
 
-      <Page labelColor={labelColor} countColor={countColor}>
+      <Page labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle}>
         <div>
           <div className="pb-4 border-b border-gray-200">
             <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor badge</h3>
@@ -90,8 +96,8 @@ export default function Home() {
           </div>
 
           <div className={`my-4 mb-12`}>
-            <div className="grid grid-cols-6 gap-6">
-              <div className="col-span-6 sm:col-span-3">
+            <div className="grid grid-cols-12 gap-6">
+              <div className="col-span-12 sm:col-span-6">
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                   Username/Company
                 </label>
@@ -107,7 +113,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className="col-span-6 sm:col-span-3">
+              <div className="col-span-12 sm:col-span-6">
                 <label htmlFor="repository" className="block text-sm font-medium text-gray-700">
                   Repository name
                 </label>
@@ -123,7 +129,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className="col-span-6 sm:col-span-2">
+              <div className="col-span-12 sm:col-span-3">
                 <label htmlFor="label" className="block text-sm font-medium text-gray-700">
                   Label
                 </label>
@@ -142,6 +148,8 @@ export default function Home() {
               <ColorPicker color={labelColor} title={`Label background`} updateColor={(color) => setLabelColor(color)} />
 
               <ColorPicker color={countColor} title={`Count background`} updateColor={(color) => setCountColor(color)} />
+
+              <StyleDropdown style={badgeStyle} title={`Badge style`} updateStyle={(style) => setBadgeStyle(style)} />
             </div>
           </div>
         </div>

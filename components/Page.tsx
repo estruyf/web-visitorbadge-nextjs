@@ -6,12 +6,13 @@ import { Header } from './Header';
 export interface IPageProps {
   labelColor: string;
   countColor: string;
+  badgeStyle: string;
 }
 
-export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countColor, children }: React.PropsWithChildren<IPageProps>) => {
+export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countColor, badgeStyle, children }: React.PropsWithChildren<IPageProps>) => {
   return (
     <div className="bg-white flex flex-col h-screen">
-      <Header labelColor={labelColor} countColor={countColor} />
+      <Header labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle} />
 
       <CTA />
 
