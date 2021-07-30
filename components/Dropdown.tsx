@@ -3,26 +3,20 @@ import * as React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import { Fragment } from 'react';
 
-export interface IStyleDropdownProps {
-  style: string;
+export interface IDropdownProps {
+  selected: string;
   title: string;
-  updateStyle: (style: string) => void;
+  items: string[];
+  triggerUpdate: (style: string) => void;
 }
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const styles = [
-  "default",
-  "flat",
-  "flat-square",
-  "plastic"
-];
-
-export const StyleDropdown: React.FunctionComponent<IStyleDropdownProps> = ({style, title, updateStyle}: React.PropsWithChildren<IStyleDropdownProps>) => {
+export const Dropdown: React.FunctionComponent<IDropdownProps> = ({items, selected, title, triggerUpdate}: React.PropsWithChildren<IDropdownProps>) => {
   return (
-    <div className="col-span-12 sm:col-span-3">
+    <div className="col-span-12 sm:col-span-2">
       <label htmlFor="label" className="block text-sm font-medium text-gray-700">
         {title}
       </label>
@@ -31,7 +25,7 @@ export const StyleDropdown: React.FunctionComponent<IStyleDropdownProps> = ({sty
         <>
           <div>
             <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
-              {style}
+              {selected}
               <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
             </Menu.Button>
           </div>
@@ -52,17 +46,17 @@ export const StyleDropdown: React.FunctionComponent<IStyleDropdownProps> = ({sty
             >
               <div className="py-1">
                 {
-                  styles.map((style) => (
-                    <Menu.Item key={style}>
+                  items.map((item) => (
+                    <Menu.Item key={item}>
                       {({ active }) => (
                         <button
                           className={classNames(
                             active ? 'bg-gray-100 text-gray-900 w-full' : 'text-gray-700',
                             'block px-4 py-2 text-sm w-full'
                           )}
-                          onClick={() => updateStyle(style)}
+                          onClick={() => triggerUpdate(item)}
                         >
-                          {style}
+                          {item}
                         </button>
                       )}
                     </Menu.Item>

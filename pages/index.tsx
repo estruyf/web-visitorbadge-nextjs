@@ -4,10 +4,22 @@ import 'tailwindcss/tailwind.css';
 import { Page } from '../components/Page';
 import { ColorPicker } from '../components/ColorPicker';
 import { API } from '../constants/API';
-import { StyleDropdown } from '../components/StyleDropdown';
+import { Dropdown } from '../components/Dropdown';
 import { Favicons } from '../components/Favicons';
 
 const defaultLabelColor = "#555555";
+
+const styles = [
+  "default",
+  "flat",
+  "flat-square",
+  "plastic"
+];
+
+const types = [
+  "total",
+  "daily"
+];
 
 export default function Home() {
   const [ username, setUsername ] = useState('');
@@ -16,6 +28,7 @@ export default function Home() {
   const [ labelColor, setLabelColor ] = useState(defaultLabelColor);
   const [ countColor, setCountColor ] = useState('#263759');
   const [ badgeStyle, setBadgeStyle ] = useState('default');
+  const [ badgeType, setBadgeType ] = useState('total');
 
   const usernameChange = (e: SyntheticEvent<HTMLInputElement>) => {
     setUsername(e.currentTarget.value || "");
@@ -54,7 +67,7 @@ export default function Home() {
   const getMarkdownCode = () => {
     if (username && repository) {
       const query = getQueryString();
-      return `![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}/${API.visitors}${query})`;
+      return `![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}${badgeType === "total" ? API.visitors : API.daily}${query})`;
     }
     return '';
   };
@@ -62,7 +75,7 @@ export default function Home() {
   const getLink = () => {
     if (username && repository) {
       const query = getQueryString();
-      return `${process.env.NEXT_PUBLIC_VISITOR_API}/${API.visitors}${query}`;
+      return `${process.env.NEXT_PUBLIC_VISITOR_API}${badgeType === "total" ? API.visitors : API.daily}${query}`;
     }
     return '';
   };
@@ -132,7 +145,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className="col-span-12 sm:col-span-3">
+              <div className="col-span-12 sm:col-span-4">
                 <label htmlFor="label" className="block text-sm font-medium text-gray-700">
                   Label
                 </label>
@@ -152,7 +165,9 @@ export default function Home() {
 
               <ColorPicker color={countColor} title={`Count background`} updateColor={(color) => setCountColor(color)} />
 
-              <StyleDropdown style={badgeStyle} title={`Badge style`} updateStyle={(style) => setBadgeStyle(style)} />
+              <Dropdown items={styles} selected={badgeStyle} title={`Badge style`} triggerUpdate={(style) => setBadgeStyle(style)} />
+              
+              <Dropdown items={types} selected={badgeType} title={`Badge type`} triggerUpdate={(type) => setBadgeType(type)} />
             </div>
           </div>
         </div>

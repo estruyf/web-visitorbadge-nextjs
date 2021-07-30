@@ -1,5 +1,6 @@
 
 export const API = {
-  visitors: "/api/VisitorHit",
+  visitors: "/api/visitors",
+  daily: "/api/daily",
   total: "/api/total"
 }

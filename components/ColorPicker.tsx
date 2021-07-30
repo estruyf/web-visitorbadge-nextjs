@@ -34,7 +34,7 @@ export const ColorPicker: React.FunctionComponent<IColorPickerProps> = ({color, 
   }, [show]);
 
   return (
-    <div className="col-span-12 sm:col-span-3" ref={nodeRef as any}>
+    <div className="col-span-12 sm:col-span-2" ref={nodeRef as any}>
       <label htmlFor="label" className="block text-sm font-medium text-gray-700">
         {title}
       </label>
