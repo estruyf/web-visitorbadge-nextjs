@@ -5,6 +5,7 @@ import { Page } from '../components/Page';
 import { ColorPicker } from '../components/ColorPicker';
 import { API } from '../constants/API';
 import { StyleDropdown } from '../components/StyleDropdown';
+import { Favicons } from '../components/Favicons';
 
 const defaultLabelColor = "#555555";
 
@@ -85,6 +86,8 @@ export default function Home() {
         <meta property="twitter:url" content="" />
         <meta property="og:url" content="" />
       </Head>
+
+      <Favicons />
 
       <Page labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle}>
         <div>

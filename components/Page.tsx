@@ -16,8 +16,10 @@ export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countCol
 
       <CTA />
 
-      <main className={`mt-12 max-w-7xl px-4 sm:px-6 flex-grow`}>
-        {children}
+      <main className={`mt-12 flex-grow`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {children}
+        </div>
       </main>
 
       <Footer />
