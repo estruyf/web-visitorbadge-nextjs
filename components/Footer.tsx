@@ -4,6 +4,7 @@ export interface IFooterProps {}
 
 const navigation = {
   main: [
+    { name: 'GitHub', href: 'https://github.com/estruyf/web-visitorbadge-nextjs' },
     { name: 'Buy me a coffee', href: 'https://www.buymeacoffee.com/zMeFRy9' },
     { name: 'Blog', href: 'https://www.eliostruyf.com' },
     { name: 'Squarl', href: 'https://www.squarl.com' }

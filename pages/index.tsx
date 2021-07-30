@@ -54,7 +54,7 @@ export default function Home() {
   const getMarkdownCode = () => {
     if (username && repository) {
       const query = getQueryString();
-      return `![](${process.env.NEXT_PUBLIC_VISITOR_API}/${API.visitors}${query})`;
+      return `![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}/${API.visitors}${query})`;
     }
     return '';
   };

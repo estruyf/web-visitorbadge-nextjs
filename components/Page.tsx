@@ -2,6 +2,7 @@ import * as React from 'react';
 import { CTA } from './CTA';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { Issue } from './Issue';
 
 export interface IPageProps {
   labelColor: string;
@@ -20,6 +21,8 @@ export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countCol
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {children}
         </div>
+
+        <Issue />
       </main>
 
       <Footer />
