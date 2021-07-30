@@ -10,8 +10,8 @@ module.exports = {
   darkMode: false,
   theme: {
     fontFamily: {
-      display: ["Oswald", "sans-serif", "Helvetica"],
-      body: ["Nunito", "sans-serif"]
+      heading: ["'Baloo 2'", "cursive"],
+      body: ["Montserrat", "sans-serif"]
     },
     colors: {
       transparent: 'transparent',

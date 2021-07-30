@@ -24,12 +24,12 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
   return (
     <div className="bg-blue-400">
       <div className="max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-extrabold text-white">
+        <h1 className="text-5xl font-extrabold text-white font-heading">
           A simple visitor badge for your website
         </h1>
         {
           total > 0 && (
-            <h2 className="text-2xl mt-4 font-extrabold text-white">
+            <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">
               Come and join <span className="text-yellow-500">{total}</span> others that are using this service
             </h2>
           )
