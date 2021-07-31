@@ -6,6 +6,8 @@ import { ColorPicker } from '../components/ColorPicker';
 import { API } from '../constants/API';
 import { Dropdown } from '../components/Dropdown';
 import { Favicons } from '../components/Favicons';
+import { ClipboardCopyIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid';
+import { CopyField } from '../components/CopyField';
 
 const defaultLabelColor = "#555555";
 
@@ -181,32 +183,10 @@ export default function Home() {
           </div>
 
           <div className="my-4 grid grid-cols-6 gap-6">
-            <div className="col-span-6">
-              <label htmlFor="markdown" className="block text-sm font-medium text-gray-700">
-                Markdown
-              </label>
-              <input
-                type="text"
-                name="markdown"
-                id="markdown"
-                value={getMarkdownCode()}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                disabled
-              />
-            </div>
-            <div className="col-span-6">
-              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
-                Image URL
-              </label>
-              <input
-                type="text"
-                name="imageUrl"
-                id="imageUrl"
-                value={getLink()}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                disabled
-              />
-            </div>
+
+            <CopyField title={`Markdown`} value={getMarkdownCode()} />
+
+            <CopyField title={`Image URL`} value={getLink()} />
 
             {
               getLink() && (
