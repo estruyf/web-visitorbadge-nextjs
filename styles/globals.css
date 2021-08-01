@@ -5,3 +5,7 @@
 html, body, #__next {
   @apply h-full;
 }
+
+.blockPicker {
+  @apply shadow-lg !important;
+}

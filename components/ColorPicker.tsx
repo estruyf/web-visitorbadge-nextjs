@@ -42,7 +42,7 @@ export const ColorPicker: React.FunctionComponent<IColorPickerProps> = ({color, 
       {
         show && (
           <div className={`absolute mt-2`}>
-            <BlockPicker color={color} onChangeComplete={(color) => updateColor(color.hex)} />
+            <BlockPicker color={color} onChangeComplete={(color) => updateColor(color.hex)} className={`blockPicker z-10 ring-1 ring-black ring-opacity-5 shadow-lg`} />
           </div>
         )
       }
