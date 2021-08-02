@@ -20,7 +20,8 @@ const styles = [
 
 const types = [
   "total",
-  "daily"
+  "daily",
+  "combined"
 ];
 
 export default function Home() {
@@ -66,10 +67,20 @@ export default function Home() {
     return query;
   };
 
+  const getApi = () => {
+    if (badgeType === "total") {
+      return API.visitors;
+    } else if (badgeType === "daily") {
+      return API.daily;
+    } else if (badgeType === "combined") {
+      return API.combined;
+    }
+  }
+
   const getMarkdownCode = () => {
     if (username && repository) {
       const query = getQueryString();
-      return `![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}${badgeType === "total" ? API.visitors : API.daily}${query})`;
+      return `![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query})`;
     }
     return '';
   };
@@ -77,7 +88,7 @@ export default function Home() {
   const getLink = () => {
     if (username && repository) {
       const query = getQueryString();
-      return `${process.env.NEXT_PUBLIC_VISITOR_API}${badgeType === "total" ? API.visitors : API.daily}${query}`;
+      return `${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query}`;
     }
     return '';
   };
@@ -133,7 +144,7 @@ export default function Home() {
 
               <div className="col-span-12 sm:col-span-6">
                 <label htmlFor="repository" className="block text-sm font-medium text-gray-700">
-                  Repository name
+                  Repository/Project name
                 </label>
                 <input
                   type="text"
