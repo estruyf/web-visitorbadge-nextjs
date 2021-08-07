@@ -21,8 +21,13 @@ export const Status: React.FunctionComponent<IStatusProps> = (props: React.Props
           <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">
             Want to keep track of your visitors?
           </h2>
+
           <p className="mt-6 max-w-4xl text-xl text-gray-200">
-            With our status API, you can keep track of the total hits and 7 day overview of your visitors without affacting your hits. The API is available at: <br /> <code>{process.env.NEXT_PUBLIC_VISITOR_API}{API.status}{`?user=<username>&repo=<repo-name>`} - GET</code>
+            You can keep track of your total hits and seven day visitor overview on our status page: <br /> <code>{document.location.origin}/status/{`<username>/<repo-name>`}</code>
+          </p>
+
+          <p className="mt-6 max-w-4xl text-xl text-gray-200">
+            You can also make use of our API to receive the information if you want to integrate it in your system. The API is available at: <br /> <code>{process.env.NEXT_PUBLIC_VISITOR_API}{API.status}{`?user=<username>&repo=<repo-name>`} - GET</code>
           </p>
         </div>
       </div>

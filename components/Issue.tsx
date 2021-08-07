@@ -1,10 +1,12 @@
 import * as React from 'react';
 
-export interface IIssueProps {}
+export interface IIssueProps {
+  disableTop?: boolean;
+}
 
-export const Issue: React.FunctionComponent<IIssueProps> = (props: React.PropsWithChildren<IIssueProps>) => {
+export const Issue: React.FunctionComponent<IIssueProps> = ({disableTop}: React.PropsWithChildren<IIssueProps>) => {
   return (
-    <div className="-mt-32 bg-white max-w-3xl mx-auto text-center py-12 px-4 sm:px-6 lg:py-16 lg:px-8 z-10 relative rounded-2xl">
+    <div className={`${!disableTop ? "-mt-32" : ""} bg-white max-w-3xl mx-auto text-center py-12 px-4 sm:px-6 lg:py-16 lg:px-8 z-10 relative rounded-2xl`}>
       <h2 className=" font-extrabold tracking-tight text-gray-900 sm:text-4xl">
         <span className="block text-3xl">Encountered an issue?</span>
         <span className="block text-2xl">Please let me know via opening a issue on GitHub</span>
