@@ -23,7 +23,7 @@ export const Status: React.FunctionComponent<IStatusProps> = (props: React.Props
           </h2>
 
           <p className="mt-6 max-w-4xl text-xl text-gray-200">
-            You can keep track of your total hits and seven day visitor overview on our status page: <br /> <code>{document.location.origin}/status/{`<username>/<repo-name>`}</code>
+            You can keep track of your total hits and seven day visitor overview on our status page: <br /> <code>{process.env.NEXT_PUBLIC_SITE_URL}/status/{`<username>/<repo-name>`}</code>
           </p>
 
           <p className="mt-6 max-w-4xl text-xl text-gray-200">
