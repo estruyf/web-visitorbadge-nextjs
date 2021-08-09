@@ -8,6 +8,7 @@ import { Dropdown } from '../components/Dropdown';
 import { Favicons } from '../components/Favicons';
 import { ClipboardCopyIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid';
 import { CopyField } from '../components/CopyField';
+import Link from 'next/link';
 
 const defaultLabelColor = "#555555";
 
@@ -93,6 +94,13 @@ export default function Home() {
     return '';
   };
 
+  const getStatusLink = () => {
+    if (username && repository) {
+      return `${process.env.NEXT_PUBLIC_SITE_URL}/status/${username}/${repository}`;
+    }
+    return '';
+  };
+
   return (
     <>
       <Head>
@@ -115,7 +123,7 @@ export default function Home() {
 
       <Favicons />
 
-      <Page labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle}>
+      <Page labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle} username={username} repository={repository}>
         <div>
           <div className="pb-4 border-b border-gray-200">
             <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor badge</h3>
@@ -211,6 +219,36 @@ export default function Home() {
                 </div>
               )
             }
+          </div>
+        </div>
+
+        <div>
+          <div className="mt-8 pb-4 border-b border-gray-200">
+            <h3 className="text-xl leading-6 font-medium text-gray-900">Follow up on your visitor hits</h3>
+            <p className="mt-2 max-w-4xl text-sm text-gray-500">
+              Want to follow up on your visitor hits? With the following links you can do so.
+            </p>
+          </div>
+
+          <div className="my-4 grid grid-cols-6 gap-6">
+
+            <div className="col-span-12">
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                Status page
+              </label>
+
+              {
+                getStatusLink() ? (
+                  <Link href={getStatusLink()}>
+                    <a id="status" className="mt-1 block w-full sm:text-sm text-yellow-700" target="_blank" rel="noopener noreferrer">
+                      Click here to go to the status page of: {username}/{repository}
+                    </a>
+                  </Link>
+                ) : (
+                  <p className="mt-1 block w-full sm:text-sm text-blue-500">No link, please fill in a username and repository.</p>
+                )
+              }
+            </div>
           </div>
         </div>
       </Page>

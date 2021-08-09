@@ -2,9 +2,12 @@ import * as React from 'react';
 import { API } from '../constants/API';
 import { Issue } from './Issue';
 
-export interface IStatusProps {}
+export interface IStatusProps {
+  username?: string;
+  repository?: string;
+}
 
-export const Status: React.FunctionComponent<IStatusProps> = (props: React.PropsWithChildren<IStatusProps>) => {
+export const Status: React.FunctionComponent<IStatusProps> = ({username, repository}: React.PropsWithChildren<IStatusProps>) => {
   return (
     <div className="bg-white mt-12">
       <div className="relative pb-32 bg-gray-800">
@@ -22,12 +25,12 @@ export const Status: React.FunctionComponent<IStatusProps> = (props: React.Props
             Want to keep track of your visitors?
           </h2>
 
-          <p className="mt-6 max-w-4xl text-xl text-gray-200">
-            You can keep track of your total hits and seven day visitor overview on our status page: <br /> <code>{process.env.NEXT_PUBLIC_SITE_URL}/status/{`<username>/<repo-name>`}</code>
+          <p className="mt-6 max-w-4xl text-xl text-gray-200 break-words">
+            You can keep track of your total hits and seven day visitor overview on our status page: <br /> <code>{process.env.NEXT_PUBLIC_SITE_URL}/status/{`${username || "<username>"}/${repository || "<repository>"}`}</code>
           </p>
 
-          <p className="mt-6 max-w-4xl text-xl text-gray-200">
-            You can also make use of our API to receive the information if you want to integrate it in your system. The API is available at: <br /> <code>{process.env.NEXT_PUBLIC_VISITOR_API}{API.status}{`?user=<username>&repo=<repo-name>`} - GET</code>
+          <p className="mt-6 max-w-4xl text-xl text-gray-200 break-words">
+            You can also make use of our API to receive the information if you want to integrate it in your system. The API is available at: <br /> <code>{process.env.NEXT_PUBLIC_VISITOR_API}{API.status}{`?user=${username || "<username>"}&repo=${repository || "<repository>"}`} - GET</code>
           </p>
         </div>
       </div>
