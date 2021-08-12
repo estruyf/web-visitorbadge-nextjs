@@ -8,6 +8,7 @@ import { Issue } from './Issue';
 import { Header } from './Header';
 import Head from 'next/head';
 import { Loading } from './Loading';
+import { DEFAULTS } from '../constants/Defaults';
 
 export interface IStatusPageProps {
   url?: string;
@@ -31,6 +32,8 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
       return url;
     } else if (user && repo) {
       return `${user}/${repo}`;
+    } else {
+      return DEFAULTS.url;
     }
   }
 

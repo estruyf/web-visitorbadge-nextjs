@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { API } from '../constants/API';
+import { DEFAULTS } from '../constants/Defaults';
 
 export interface StatusResult {
   total: number;
@@ -55,7 +56,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
     if ((user && repo) || url) {
       getStatus();
     } else {
-      getStatus('https://www.visitorbadge.io/')
+      getStatus(DEFAULTS.url);
     }
   }, [url, user, repo]);
 
