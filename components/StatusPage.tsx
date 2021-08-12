@@ -26,13 +26,21 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     }
   }
 
+  const getPath = () => {
+    if (url) {
+      return url;
+    } else if (user && repo) {
+      return `${user}/${repo}`;
+    }
+  }
+
   return (
     <>
       <Head>
         <title>Visitor overview for {user}/{repo}</title>
-        <meta name="description" content={`Visitor overview for ${user}/${repo}`} />
-        <meta property="og:description" content={`Visitor overview for ${user}/${repo}`} />
-        <meta property="twitter:description" content={`Visitor overview for ${user}/${repo}`} />
+        <meta name="description" content={`Visitor overview for ${getPath()}`} />
+        <meta property="og:description" content={`Visitor overview for ${getPath()}`} />
+        <meta property="twitter:description" content={`Visitor overview for ${getPath()}`} />
 
         <link rel="preconnect" href={process.env.NEXT_PUBLIC_VISITOR_API} />
         
@@ -42,8 +50,8 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         <meta property="twitter:image" content={`https://visitorbadge.io/preview.png`} />
         <meta property="og:image" content={`https://visitorbadge.io/preview.png`} />
 
-        <meta property="twitter:url" content="" />
-        <meta property="og:url" content="" />
+        <meta property="twitter:url" content="https://www.visitorbadge.io/status" />
+        <meta property="og:url" content="https://www.visitorbadge.io/status" />
       </Head>
       
       { loading && <Loading /> }
@@ -55,7 +63,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex justify-center items-center pb-12">
               <h2 className={`text-3xl font-extrabold text-blue-500 font-heading`}>
-                Visitor overview for {user}/{repo}
+                Visitor overview for {getPath()}
               </h2>
             </div>
           </div>
