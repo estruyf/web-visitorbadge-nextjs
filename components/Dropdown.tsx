@@ -42,7 +42,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = ({items, select
           >
             <Menu.Items
               static
-              className="origin-top-right absolute right-0 mt-2 rounded-md shadow-lg bg-white w-full ring-1 ring-black ring-opacity-5 focus:outline-none"
+              className="origin-top-right absolute right-0 mt-2 rounded-md shadow-lg bg-white w-full ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
             >
               <div className="py-1">
                 {

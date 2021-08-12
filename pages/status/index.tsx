@@ -1,9 +1,10 @@
+import { useRouter } from "next/dist/client/router";
+import React from "react";
+import { StatusPage } from "../../components/StatusPage";
 
-export default function Status() {  
+export default function Status() {
+  const router = useRouter()
+  const path: string = router.query.path as string;
   
-  return (
-    <div>
-      <h1>Status</h1>
-    </div>
-  );
+  return <StatusPage url={path} />;
 }

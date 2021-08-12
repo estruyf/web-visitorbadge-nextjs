@@ -10,12 +10,13 @@ import Head from 'next/head';
 import { Loading } from './Loading';
 
 export interface IStatusPageProps {
-  user: string;
-  repo: string;
+  url?: string;
+  user?: string;
+  repo?: string;
 }
 
-export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
-  const { loading, total, today, daily } = useStatus(user, repo);
+export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
+  const { loading, total, today, daily } = useStatus(url, user, repo);
 
   let bestDay: DailyResult | undefined;
   if (daily.length > 0) {

@@ -10,10 +10,9 @@ export interface IPageProps {
   countColor: string;
   badgeStyle: string;
   username: string;
-  repository: string;
 }
 
-export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countColor, badgeStyle, username, repository, children }: React.PropsWithChildren<IPageProps>) => {
+export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countColor, badgeStyle, username, children }: React.PropsWithChildren<IPageProps>) => {
   return (
     <div className="bg-white flex flex-col h-screen">
       <Header labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle} />
@@ -25,7 +24,7 @@ export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countCol
           {children}
         </div>
 
-        <Status username={username} repository={repository} />
+        <Status username={username} />
       </main>
 
       <Footer />

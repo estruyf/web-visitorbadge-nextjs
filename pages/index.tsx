@@ -6,9 +6,9 @@ import { ColorPicker } from '../components/ColorPicker';
 import { API } from '../constants/API';
 import { Dropdown } from '../components/Dropdown';
 import { Favicons } from '../components/Favicons';
-import { ClipboardCopyIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid';
 import { CopyField } from '../components/CopyField';
 import Link from 'next/link';
+import { useDebounce } from '../hooks/useDebounce';
 
 const defaultLabelColor = "#555555";
 
@@ -27,19 +27,16 @@ const types = [
 
 export default function Home() {
   const [ username, setUsername ] = useState('');
-  const [ repository, setRepository ] = useState('');
   const [ label, setLabel ] = useState('');
   const [ labelColor, setLabelColor ] = useState(defaultLabelColor);
   const [ countColor, setCountColor ] = useState('#263759');
   const [ badgeStyle, setBadgeStyle ] = useState('default');
   const [ badgeType, setBadgeType ] = useState('total');
+  const debounceUsername = useDebounce(username, 1000);
 
   const usernameChange = (e: SyntheticEvent<HTMLInputElement>) => {
-    setUsername(e.currentTarget.value || "");
-  };
-
-  const repoChange = (e: SyntheticEvent<HTMLInputElement>) => {
-    setRepository(e.currentTarget.value || "");
+    const value = e.currentTarget.value || "";
+    setUsername(value);
   };
 
   const labelChange = (e: SyntheticEvent<HTMLInputElement>) => {
@@ -47,7 +44,7 @@ export default function Home() {
   };
 
   const getQueryString = () => {
-    let query = `?user=${username}&repo=${repository}`;
+    let query = `?path=${encodeURIComponent(debounceUsername)}`;
       
     if (label) {
       query += `&label=${label}`;
@@ -79,15 +76,23 @@ export default function Home() {
   }
 
   const getMarkdownCode = () => {
-    if (username && repository) {
+    if (debounceUsername) {
       const query = getQueryString();
       return `![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query})`;
     }
     return '';
   };
 
+  const getHtmlLink = () => {
+    if (debounceUsername) {
+      const query = getQueryString();
+      return `<a href="${process.env.NEXT_PUBLIC_SITE_URL}"><img src="${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query}" /></a>`;
+    }
+    return '';
+  };
+
   const getLink = () => {
-    if (username && repository) {
+    if (debounceUsername) {
       const query = getQueryString();
       return `${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query}`;
     }
@@ -95,8 +100,8 @@ export default function Home() {
   };
 
   const getStatusLink = () => {
-    if (username && repository) {
-      return `${process.env.NEXT_PUBLIC_SITE_URL}/status/${username}/${repository}`;
+    if (debounceUsername) {
+      return `${process.env.NEXT_PUBLIC_SITE_URL}/status?path=${encodeURIComponent(debounceUsername)}`;
     }
     return '';
   };
@@ -123,7 +128,10 @@ export default function Home() {
 
       <Favicons />
 
-      <Page labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle} username={username} repository={repository}>
+      <Page labelColor={labelColor} 
+            countColor={countColor} 
+            badgeStyle={badgeStyle} 
+            username={debounceUsername}>
         <div>
           <div className="pb-4 border-b border-gray-200">
             <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor badge</h3>
@@ -134,9 +142,9 @@ export default function Home() {
 
           <div className={`my-4 mb-12`}>
             <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 sm:col-span-6">
+              <div className="col-span-12">
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Username/Company
+                  URL or Username/Repository
                 </label>
                 <input
                   type="text"
@@ -145,24 +153,8 @@ export default function Home() {
                   autoComplete="username"
                   value={username}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Example: estruyf"
+                  placeholder="Example: https://github.com/estruyf/github-visitors-badge or estruyf/github-visitors-badge"
                   onChange={usernameChange}
-                />
-              </div>
-
-              <div className="col-span-12 sm:col-span-6">
-                <label htmlFor="repository" className="block text-sm font-medium text-gray-700">
-                  Repository/Project name
-                </label>
-                <input
-                  type="text"
-                  name="repository"
-                  id="repository"
-                  autoComplete="repository"
-                  value={repository}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Example: github-visitors-badge"
-                  onChange={repoChange}
                 />
               </div>
 
@@ -193,7 +185,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div>
+        <div className={`mt-16`}>
           <div className="pb-4 border-b border-gray-200">
             <h3 className="text-xl leading-6 font-medium text-gray-900">The code for you to use</h3>
             <p className="mt-2 max-w-4xl text-sm text-gray-500">
@@ -204,6 +196,8 @@ export default function Home() {
           <div className="my-4 grid grid-cols-6 gap-6">
 
             <CopyField title={`Markdown`} value={getMarkdownCode()} />
+
+            <CopyField title={`HTML`} value={getHtmlLink()} />
 
             <CopyField title={`Image URL`} value={getLink()} />
 
@@ -222,7 +216,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div>
+        <div className={`mt-16`}>
           <div className="mt-8 pb-4 border-b border-gray-200">
             <h3 className="text-xl leading-6 font-medium text-gray-900">Follow up on your visitor hits</h3>
             <p className="mt-2 max-w-4xl text-sm text-gray-500">
@@ -241,11 +235,11 @@ export default function Home() {
                 getStatusLink() ? (
                   <Link href={getStatusLink()}>
                     <a id="status" className="mt-1 block w-full sm:text-sm text-yellow-700" target="_blank" rel="noopener noreferrer">
-                      Click here to go to the status page of: {username}/{repository}
+                      Click here to go to the status page of: {username}
                     </a>
                   </Link>
                 ) : (
-                  <p className="mt-1 block w-full sm:text-sm text-blue-500">No link, please fill in a username and repository.</p>
+                  <p className="mt-1 block w-full sm:text-sm text-blue-500">No link, please fill in a URL or username/repository path.</p>
                 )
               }
             </div>
