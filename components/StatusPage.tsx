@@ -40,7 +40,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   return (
     <>
       <Head>
-        <title>Visitor overview for {user}/{repo}</title>
+        <title>Visitor overview for {getPath()}</title>
         <meta name="description" content={`Visitor overview for ${getPath()}`} />
         <meta property="og:description" content={`Visitor overview for ${getPath()}`} />
         <meta property="twitter:description" content={`Visitor overview for ${getPath()}`} />
