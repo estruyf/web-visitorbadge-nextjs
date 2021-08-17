@@ -1,14 +1,13 @@
-import Link from 'next/link';
 import * as React from 'react';
-import useStatus, { DailyResult } from '../hooks/useStatus';
-import { Line } from "react-chartjs-2";
-import { Statistic } from './Statistic';
+import useStatus from '../hooks/useStatus';
+import { Bar, Line, Pie } from "react-chartjs-2";
 import { Footer } from './Footer';
 import { Issue } from './Issue';
 import { Header } from './Header';
 import Head from 'next/head';
 import { Loading } from './Loading';
 import { DEFAULTS } from '../constants/Defaults';
+import { Statistics } from './Statistics';
 
 export interface IStatusPageProps {
   url?: string;
@@ -19,13 +18,36 @@ export interface IStatusPageProps {
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
   const { loading, total, today, daily } = useStatus(url, user, repo);
 
-  let bestDay: DailyResult | undefined;
-  if (daily.length > 0) {
-    const best = Math.max(...daily.map(d => d.total));
-    if (best) {
-      bestDay = daily.find(d => d.total === best);
+  let bestCountry: string | undefined;
+  let mostUsedBrowser: string | undefined;
+  
+  let allCountries = {} as { [country: string]: number };
+  let allBrowsers = {} as { [country: string]: number };
+
+  if (daily.length > 0) {    
+    for (const day of daily) {
+      for (const country in day.countries) {
+        if (allCountries[country]) {
+          allCountries[country] += day.countries[country];
+        } else {
+          allCountries[country] = day.countries[country];
+        }
+      }
+
+      for (const browser in day.browsers) {
+        if (allBrowsers[browser]) {
+          allBrowsers[browser] += day.browsers[browser];
+        } else {
+          allBrowsers[browser] = day.browsers[browser];
+        }
+      }
     }
+
+    bestCountry = Object.keys(allCountries).reduce((a, b) => allCountries[a] > allCountries[b] ? a : b);
+    mostUsedBrowser = Object.keys(allBrowsers).reduce((a, b) => allBrowsers[a] > allBrowsers[b] ? a : b);
   }
+
+  console.log(allBrowsers)
 
   const getPath = () => {
     if (url) {
@@ -36,6 +58,11 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
       return DEFAULTS.url;
     }
   }
+
+  const bestBrowser = mostUsedBrowser ? { title: mostUsedBrowser, value: allBrowsers[mostUsedBrowser] } : null;
+  const bestCountryData = bestCountry ? { title: bestCountry, value: allCountries[bestCountry] } : null;
+  const sortedBrowsers = Object.keys(allBrowsers).sort((a, b) => allBrowsers[b] - allBrowsers[a]).map(browser => ({ title: browser, value: allBrowsers[browser] }));
+  const sortedCountries = Object.keys(allCountries).sort((a, b) => allCountries[b] - allCountries[a]).map(country => ({ title: country === "-" ? "Unknown" : country, value: allCountries[country] }));
 
   return (
     <>
@@ -76,22 +103,18 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
           <section className={`bg-gray-50 mb-12 border-t border-b border-gray-300`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
               <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly stats</h3>
-              
-              <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
-                {total && <Statistic title={`Total hits`} total={total} />}
 
-                {today && <Statistic title={`Today`} total={today} />}
-
-                {(daily && daily.length > 0) && <Statistic title={`Hits the last 7 days`} total={daily.map(d => d.total).reduce((a, b) => (a + b))} />}
-
-                {(bestDay && bestDay.total) && <Statistic title={`Best day: ${bestDay.title}`} total={bestDay.total} />}
-              </dl>
+              <Statistics total={total} 
+                          today={today} 
+                          dailyStats={daily}
+                          bestBrowser={bestBrowser}
+                          bestCountry={bestCountryData} />
             </div>
           </section>
 
           <section>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
-              <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly chart</h3>
+              <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly charts</h3>
 
               {
                 (daily && daily.length > 0) && (
@@ -101,11 +124,12 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                       labels: daily.map(r => r.title),
                       datasets: [
                         {
-                          label: 'Weekly overview',
+                          label: 'Daily visitors',
                           
                           data: daily.map(r => r.total),
                           lineTension: 0.1,
                           fill: true,
+                          borderWidth: 1,
                           borderColor: '#CC8312',
                           backgroundColor: "#FCF2E1",
                           pointRadius: 5,
@@ -113,6 +137,50 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                       ]
                     }}
                   />   
+                )
+              }
+
+              {
+                (sortedBrowsers && sortedBrowsers.length > 0) && (
+                  <div className={`mt-12`}>
+                    <Bar
+                      height={100}
+                      data={{
+                        labels: sortedBrowsers.map(r => r.title),
+                        datasets: [
+                          {
+                            label: 'Browsers',
+                            data: sortedBrowsers.map(r => r.value),
+                            borderWidth: 1,
+                            borderColor: '#CC8312',
+                            backgroundColor: "#FCF2E1"
+                          }
+                        ]
+                      }}
+                    /> 
+                  </div>  
+                )
+              }
+              
+              {
+                (sortedCountries && sortedCountries.length > 0) && (
+                  <div className={`mt-14`}>
+                    <Bar
+                      height={100}
+                      data={{
+                        labels: sortedCountries.map(r => r.title),
+                        datasets: [
+                          {
+                            label: 'Countries',
+                            data: sortedCountries.map(r => r.value),
+                            borderWidth: 1,
+                            borderColor: '#CC8312',
+                            backgroundColor: "#FCF2E1"
+                          }
+                        ]
+                      }}
+                    />   
+                  </div>
                 )
               }
             </div>

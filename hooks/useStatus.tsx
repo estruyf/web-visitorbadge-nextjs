@@ -12,6 +12,8 @@ export interface StatusResult {
 export interface DailyResult {
   title: string;
   total: number;
+  countries: { [country: string]: number };
+  browsers: { [browser: string]: number };
 }
 
 export default function useStatus(url: string = "", user: string = "", repo: string = "") {
