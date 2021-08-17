@@ -43,8 +43,8 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
       }
     }
 
-    bestCountry = Object.keys(allCountries).reduce((a, b) => allCountries[a] > allCountries[b] ? a : b);
-    mostUsedBrowser = Object.keys(allBrowsers).reduce((a, b) => allBrowsers[a] > allBrowsers[b] ? a : b);
+    bestCountry = Object.keys(allCountries).length > 0 ? Object.keys(allCountries).reduce((a, b) => allCountries[a] > allCountries[b] ? a : b) : undefined;
+    mostUsedBrowser = Object.keys(allBrowsers).length > 0 ? Object.keys(allBrowsers).reduce((a, b) => allBrowsers[a] > allBrowsers[b] ? a : b) : undefined;
   }
 
   console.log(allBrowsers)
@@ -140,49 +140,54 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                 )
               }
 
-              {
-                (sortedBrowsers && sortedBrowsers.length > 0) && (
-                  <div className={`mt-12`}>
-                    <Bar
-                      height={100}
-                      data={{
-                        labels: sortedBrowsers.map(r => r.title),
-                        datasets: [
-                          {
-                            label: 'Browsers',
-                            data: sortedBrowsers.map(r => r.value),
-                            borderWidth: 1,
-                            borderColor: '#CC8312',
-                            backgroundColor: "#FCF2E1"
-                          }
-                        ]
-                      }}
-                    /> 
-                  </div>  
-                )
-              }
-              
-              {
-                (sortedCountries && sortedCountries.length > 0) && (
-                  <div className={`mt-14`}>
-                    <Bar
-                      height={100}
-                      data={{
-                        labels: sortedCountries.map(r => r.title),
-                        datasets: [
-                          {
-                            label: 'Countries',
-                            data: sortedCountries.map(r => r.value),
-                            borderWidth: 1,
-                            borderColor: '#CC8312',
-                            backgroundColor: "#FCF2E1"
-                          }
-                        ]
-                      }}
-                    />   
-                  </div>
-                )
-              }
+              <div className={`mt-16 grid grid-cols-12 gap-6`}>
+
+                {
+                  (sortedBrowsers && sortedBrowsers.length > 0) && (
+                    <div className={`col-span-12 sm:mt-0 sm:col-span-6`}>
+                      <Bar
+                        height={300}
+                        data={{
+                          labels: sortedBrowsers.map(r => r.title),
+                          datasets: [
+                            {
+                              label: 'Browsers',
+                              data: sortedBrowsers.map(r => r.value),
+                              borderWidth: 1,
+                              borderColor: '#CC8312',
+                              backgroundColor: "#FCF2E1",
+                              indexAxis: 'y'
+                            }
+                          ]
+                        }}
+                      /> 
+                    </div>  
+                  )
+                }
+                
+                {
+                  (sortedCountries && sortedCountries.length > 0) && (
+                    <div className={`mt-12 col-span-12 sm:mt-0 sm:col-span-6`}>
+                      <Bar
+                        height={300}
+                        data={{
+                          labels: sortedCountries.map(r => r.title),
+                          datasets: [
+                            {
+                              label: 'Countries',
+                              data: sortedCountries.map(r => r.value),
+                              borderWidth: 1,
+                              borderColor: '#CC8312',
+                              backgroundColor: "#FCF2E1",
+                              indexAxis: 'y'
+                            }
+                          ]
+                        }}
+                      />   
+                    </div>
+                  )
+                }
+              </div>
             </div>
           </section>
         </div>
