@@ -43,7 +43,7 @@ export const CopyField: React.FunctionComponent<ICopyFieldProps> = ({title, valu
           id={elmId}
           className={`text-sm bg-blue-500 block w-full border border-gray-300 rounded-md py-2 pl-3 pr-14 leading-loose whitespace-normal break-words ${value ? "text-white" : "text-gray-300 select-none"}`}
         >
-          {value || `We'll generate this, once you provided a URL`}
+          {value || `We'll generate this once you provided a URL`}
         </pre>
 
         {
