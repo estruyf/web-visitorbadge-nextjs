@@ -11,7 +11,8 @@ module.exports = {
   theme: {
     fontFamily: {
       heading: ["'Baloo 2'", "cursive"],
-      body: ["Montserrat", "sans-serif"]
+      body: ["Montserrat", "sans-serif"],
+      mono: ["Menlo", "ui-monospace", "SFMono-Regular", "Monaco", "Consolas", "'Liberation Mono'", "'Courier New'", "monospace"],
     },
     colors: {
       transparent: 'transparent',

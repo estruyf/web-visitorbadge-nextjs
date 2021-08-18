@@ -83,10 +83,18 @@ export default function Home() {
     return '';
   };
 
+  const getMarkdownCodeWithStatus = () => {
+    if (debounceUsername) {
+      const query = getQueryString();
+      return `[![Visitors](${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query})](${getStatusLink()})`;
+    }
+    return '';
+  };
+
   const getHtmlLink = () => {
     if (debounceUsername) {
       const query = getQueryString();
-      return `<a href="${process.env.NEXT_PUBLIC_SITE_URL}"><img src="${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query}" /></a>`;
+      return `<a href="${getStatusLink()}"><img src="${process.env.NEXT_PUBLIC_VISITOR_API}${getApi()}${query}" /></a>`;
     }
     return '';
   };
@@ -197,6 +205,8 @@ export default function Home() {
 
             <CopyField title={`Markdown`} value={getMarkdownCode()} />
 
+            <CopyField title={`Markdown with status link`} value={getMarkdownCodeWithStatus()} />
+
             <CopyField title={`HTML`} value={getHtmlLink()} />
 
             <CopyField title={`Image URL`} value={getLink()} />
@@ -204,7 +214,7 @@ export default function Home() {
             {
               getLink() && (
                 <div className="col-span-6">
-                  <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
                     Result
                   </label>
       
