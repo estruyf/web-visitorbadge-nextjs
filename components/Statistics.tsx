@@ -13,9 +13,6 @@ export interface IStatisticsProps {
 export const Statistics: React.FunctionComponent<IStatisticsProps> = ({dailyStats, total, today, bestCountry, bestBrowser}: React.PropsWithChildren<IStatisticsProps>) => {
   
   let bestDay: DailyResult | undefined;
-  
-  let allCountries = {} as { [country: string]: number };
-  let allBrowsers = {} as { [country: string]: number };
 
   if (dailyStats.length > 0) {
     const best = Math.max(...dailyStats.map(d => d.total));
@@ -27,9 +24,9 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({dailyStat
 
   return (
     <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
-      {total && <Statistic title={`Total hits`} total={total} />}
+      {(total !== undefined && total !== null) && <Statistic title={`Total hits`} total={total} />}
 
-      {today && <Statistic title={`Today`} total={today} />}
+      {(today !== undefined && today !== null) && <Statistic title={`Today`} total={today} />}
 
       {(dailyStats && dailyStats.length > 0) && <Statistic title={`Hits the last 7 days`} total={dailyStats.map(d => d.total).reduce((a, b) => (a + b))} />}
 
