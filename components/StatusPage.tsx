@@ -16,7 +16,7 @@ export interface IStatusPageProps {
 }
 
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
-  const { loading, total, today, daily } = useStatus(url, user, repo);
+  const { loading, total, today, daily, pages } = useStatus(url, user, repo);
 
   let bestCountry: string | undefined;
   let mostUsedBrowser: string | undefined;
@@ -47,8 +47,6 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     mostUsedBrowser = Object.keys(allBrowsers).length > 0 ? Object.keys(allBrowsers).reduce((a, b) => allBrowsers[a] > allBrowsers[b] ? a : b) : undefined;
   }
 
-  console.log(allBrowsers)
-
   const getPath = () => {
     if (url) {
       return url;
@@ -63,6 +61,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   const bestCountryData = bestCountry ? { title: bestCountry, value: allCountries[bestCountry] } : null;
   const sortedBrowsers = Object.keys(allBrowsers).sort((a, b) => allBrowsers[b] - allBrowsers[a]).map(browser => ({ title: browser, value: allBrowsers[browser] }));
   const sortedCountries = Object.keys(allCountries).sort((a, b) => allCountries[b] - allCountries[a]).map(country => ({ title: country === "-" ? "Unknown" : country, value: allCountries[country] }));
+  const sortedPages = pages.sort((a, b) => b.count - a.count).slice(0, 10);
 
   return (
     <>
@@ -107,6 +106,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
               <Statistics total={total} 
                           today={today} 
                           dailyStats={daily}
+                          pagesStats={pages}
                           bestBrowser={bestBrowser}
                           bestCountry={bestCountryData} />
             </div>
@@ -176,6 +176,29 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                             {
                               label: 'Countries',
                               data: sortedCountries.map(r => r.value),
+                              borderWidth: 1,
+                              borderColor: '#CC8312',
+                              backgroundColor: "#FCF2E1",
+                              indexAxis: 'y'
+                            }
+                          ]
+                        }}
+                      />   
+                    </div>
+                  )
+                }
+
+                {
+                  (sortedPages && sortedPages.length > 0) && (
+                    <div className={`mt-12 col-span-12 sm:mt-0 sm:col-span-12`}>
+                      <Bar
+                        height={150}
+                        data={{
+                          labels: sortedPages.map(r => r.url),
+                          datasets: [
+                            {
+                              label: 'Pages/Slug',
+                              data: sortedPages.map(r => r.count),
                               borderWidth: 1,
                               borderColor: '#CC8312',
                               backgroundColor: "#FCF2E1",

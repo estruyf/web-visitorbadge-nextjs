@@ -1,24 +1,34 @@
 import * as React from 'react';
-import { DailyResult } from '../hooks/useStatus';
+import { DailyResult, PageResult } from '../hooks/useStatus';
 import { Statistic } from './Statistic';
 
 export interface IStatisticsProps {
   total: number;
   today: number;
   dailyStats: DailyResult[];
+  pagesStats: PageResult[];
   bestCountry: { title: string; value: number } | null;
   bestBrowser: { title: string; value: number } | null;
 }
 
-export const Statistics: React.FunctionComponent<IStatisticsProps> = ({dailyStats, total, today, bestCountry, bestBrowser}: React.PropsWithChildren<IStatisticsProps>) => {
+export const Statistics: React.FunctionComponent<IStatisticsProps> = ({dailyStats, pagesStats, total, today, bestCountry, bestBrowser}: React.PropsWithChildren<IStatisticsProps>) => {
   
   let bestDay: DailyResult | undefined;
+  let bestPage: PageResult | undefined;
 
   if (dailyStats.length > 0) {
     const best = Math.max(...dailyStats.map(d => d.total));
 
     if (best) {
       bestDay = dailyStats.find(d => d.total === best);
+    }
+  }
+
+  if (pagesStats.length > 0) {
+    const best = Math.max(...pagesStats.map(d => d.count));
+
+    if (best) {
+      bestPage = pagesStats.find(d => d.count === best);
     }
   }
 
@@ -35,6 +45,8 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({dailyStat
       {(bestCountry && bestCountry.title) && <Statistic title={`Country: ${bestCountry.title}`} total={bestCountry.value} />}
 
       {(bestBrowser && bestBrowser.title) && <Statistic title={`Browser: ${bestBrowser.title}`} total={bestBrowser.value} />}
+
+      {(bestPage && bestPage.url) && <Statistic title={`Most visited page`} subTitle={bestPage.url} total={bestPage.count} />}
     </dl>
   );
 };

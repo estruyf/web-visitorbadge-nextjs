@@ -7,6 +7,7 @@ export interface StatusResult {
   total: number;
   today: number;
   dailyResults: DailyResult[];
+  pageResults: PageResult[];
 }
 
 export interface DailyResult {
@@ -16,12 +17,18 @@ export interface DailyResult {
   browsers: { [browser: string]: number };
 }
 
+export interface PageResult {
+  url: string;
+  count: number;
+}
+
 export default function useStatus(url: string = "", user: string = "", repo: string = "") {
-  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [today, setToday] = useState(0);
   const [daily, setDaily] = useState<DailyResult[]>([]);
+  const [pages, setPages] = useState<PageResult[]>([]);
 
   useEffect(() => {
     const getStatus = async (fallbackUrl?: string) => {
@@ -49,6 +56,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
           setTotal(data.total || 0);
           setToday(data.today || 0);
           setDaily(data.dailyResults || []);
+          setPages(data.pageResults || []);
         }
       }
 
@@ -66,6 +74,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
     total,
     today,
     daily,
+    pages,
     loading
   };
 }
