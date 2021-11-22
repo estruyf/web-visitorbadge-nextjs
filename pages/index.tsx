@@ -47,7 +47,7 @@ export default function Home() {
     let query = `?path=${encodeURIComponent(debounceUsername)}`;
       
     if (label) {
-      query += `&label=${label}`;
+      query += `&label=${encodeURIComponent(label)}`;
     }
 
     if (labelColor !== defaultLabelColor) {
