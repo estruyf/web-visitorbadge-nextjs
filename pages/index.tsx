@@ -25,6 +25,13 @@ const types = [
   "combined"
 ];
 
+const labelStyles = [
+  "default",
+  "upper",
+  "lower",
+  "none"
+];
+
 export default function Home() {
   const [ username, setUsername ] = useState('');
   const [ label, setLabel ] = useState('');
@@ -32,6 +39,7 @@ export default function Home() {
   const [ countColor, setCountColor ] = useState('#263759');
   const [ badgeStyle, setBadgeStyle ] = useState('default');
   const [ badgeType, setBadgeType ] = useState('total');
+  const [ labelStyle, setLabelStyle ] = useState('default');
   const debounceUsername = useDebounce(username, 1000);
 
   const usernameChange = (e: SyntheticEvent<HTMLInputElement>) => {
@@ -60,6 +68,10 @@ export default function Home() {
 
     if (badgeStyle !== "default") {
       query += `&style=${badgeStyle}`;
+    }
+
+    if (labelStyle !== "default") {
+      query += `&labelStyle=${labelStyle}`;
     }
 
     return query;
@@ -166,7 +178,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className="col-span-12 sm:col-span-4">
+              <div className="col-span-12">
                 <label htmlFor="label" className="block text-sm font-medium text-gray-700">
                   Label
                 </label>
@@ -189,6 +201,8 @@ export default function Home() {
               <Dropdown items={styles} selected={badgeStyle} title={`Badge style`} triggerUpdate={(style) => setBadgeStyle(style)} />
               
               <Dropdown items={types} selected={badgeType} title={`Badge type`} triggerUpdate={(type) => setBadgeType(type)} />
+
+              <Dropdown items={labelStyles} selected={labelStyle} title={`Label style`} triggerUpdate={(style) => setLabelStyle(style)} />
             </div>
           </div>
         </div>
