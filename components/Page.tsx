@@ -12,7 +12,7 @@ export interface IPageProps {
   username: string;
 }
 
-export const Page: React.FunctionComponent<IPageProps> = ({ labelColor, countColor, badgeStyle, username, children }: React.PropsWithChildren<IPageProps>) => {
+export const Page: React.FunctionComponent<React.PropsWithChildren<IPageProps>> = ({ labelColor, countColor, badgeStyle, username, children }: React.PropsWithChildren<IPageProps>) => {
   return (
     <div className="bg-white flex flex-col h-screen">
       <Header labelColor={labelColor} countColor={countColor} badgeStyle={badgeStyle} />

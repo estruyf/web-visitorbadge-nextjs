@@ -1,6 +1,7 @@
 import * as React from 'react';
 import useStatus from '../hooks/useStatus';
-import { Bar, Line, Pie } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title } from "chart.js";
+import { Bar, Line } from "react-chartjs-2";
 import { Footer } from './Footer';
 import { Issue } from './Issue';
 import { Header } from './Header';
@@ -8,6 +9,8 @@ import Head from 'next/head';
 import { Loading } from './Loading';
 import { DEFAULTS } from '../constants/Defaults';
 import { Statistics } from './Statistics';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title);
 
 export interface IStatusPageProps {
   url?: string;
@@ -20,11 +23,11 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
 
   let bestCountry: string | undefined;
   let mostUsedBrowser: string | undefined;
-  
+
   let allCountries = {} as { [country: string]: number };
   let allBrowsers = {} as { [country: string]: number };
 
-  if (daily.length > 0) {    
+  if (daily.length > 0) {
     for (const day of daily) {
       for (const country in day.countries) {
         if (allCountries[country]) {
@@ -72,7 +75,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         <meta property="twitter:description" content={`Visitor overview for ${getPath()}`} />
 
         <link rel="preconnect" href={process.env.NEXT_PUBLIC_VISITOR_API} />
-        
+
         <meta property="og:type" content="website" />
         <meta property="twitter:card" content="summary_large_image" />
 
@@ -82,12 +85,12 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         <meta property="twitter:url" content="https://www.visitorbadge.io/status" />
         <meta property="og:url" content="https://www.visitorbadge.io/status" />
       </Head>
-      
-      { loading && <Loading /> }
-      
+
+      {loading && <Loading />}
+
       <div className={`bg-white flex flex-col h-screen`}>
         <Header labelColor={`#555555`} countColor={`#263759`} badgeStyle={`default`} />
-        
+
         <header>
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex justify-center items-center pb-12">
@@ -103,12 +106,12 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
               <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly stats</h3>
 
-              <Statistics total={total} 
-                          today={today} 
-                          dailyStats={daily}
-                          pagesStats={pages}
-                          bestBrowser={bestBrowser}
-                          bestCountry={bestCountryData} />
+              <Statistics total={total}
+                today={today}
+                dailyStats={daily}
+                pagesStats={pages}
+                bestBrowser={bestBrowser}
+                bestCountry={bestCountryData} />
             </div>
           </section>
 
@@ -125,9 +128,8 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                       datasets: [
                         {
                           label: 'Daily visitors',
-                          
+
                           data: daily.map(r => r.total),
-                          lineTension: 0.1,
                           fill: true,
                           borderWidth: 1,
                           borderColor: '#CC8312',
@@ -136,7 +138,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                         }
                       ]
                     }}
-                  />   
+                  />
                 )
               }
 
@@ -160,11 +162,11 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                             }
                           ]
                         }}
-                      /> 
-                    </div>  
+                      />
+                    </div>
                   )
                 }
-                
+
                 {
                   (sortedCountries && sortedCountries.length > 0) && (
                     <div className={`mt-12 col-span-12 sm:mt-0 sm:col-span-6`}>
@@ -183,7 +185,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                             }
                           ]
                         }}
-                      />   
+                      />
                     </div>
                   )
                 }
@@ -206,7 +208,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                             }
                           ]
                         }}
-                      />   
+                      />
                     </div>
                   )
                 }
@@ -217,7 +219,11 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
 
         <Issue disableTop />
 
-        <Footer />  
+        <Footer />
+
+        <a className='hidden' href="https://visitorbadge.io/status?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus" title="Status of status page" rel="nofollow" >
+          <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759" />
+        </a>
       </div>
     </>
   );

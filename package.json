@@ -11,30 +11,31 @@
   },
   "dependencies": {
     "@headlessui/react": "1.4.0",
-    "@heroicons/react": "1.0.3",
-    "chart.js": "3.5.0",
+    "@heroicons/react": "^2.1.1",
+    "chart.js": "^4.4.1",
     "lodash.debounce": "4.0.8",
-    "next": "11.1.4",
-    "react": "17.0.2",
-    "react-chartjs-2": "3.0.4",
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-color": "2.19.3",
-    "react-dom": "17.0.2"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/lodash.debounce": "4.0.6",
-    "@types/react": "17.0.30",
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.0",
     "@types/react-chartjs-2": "2.5.7",
     "@types/react-color": "3.0.5",
     "autoprefixer": "^10.3.1",
     "eslint": "7.31.0",
-    "eslint-config-next": "11.0.1",
+    "eslint-config-next": "^14.1.0",
     "postcss": "^8.3.6",
     "postcss-import": "14.0.2",
     "postcss-nested": "5.0.6",
     "tailwindcss": "^2.2.7",
-    "typescript": "4.3.5"
+    "typescript": "^4.5.2"
   },
   "resolutions": {
-    "@types/react": "17.0.30"
+    "@types/react": "18.2.0"
   }
 }

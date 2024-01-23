@@ -1,14 +1,14 @@
-import { ClipboardCopyIcon } from '@heroicons/react/solid';
+import { ClipboardIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { SyntheticEvent } from 'react';
 
 export interface ICopyFieldProps {
-    title: string;
-    value: string;
+  title: string;
+  value: string;
 }
 
-export const CopyField: React.FunctionComponent<ICopyFieldProps> = ({title, value}: React.PropsWithChildren<ICopyFieldProps>) => {
-  const [ show, setShow ] = React.useState(false);
+export const CopyField: React.FunctionComponent<ICopyFieldProps> = ({ title, value }: React.PropsWithChildren<ICopyFieldProps>) => {
+  const [show, setShow] = React.useState(false);
 
   const elmId = title.replace(/ /g, '-');
 
@@ -35,7 +35,7 @@ export const CopyField: React.FunctionComponent<ICopyFieldProps> = ({title, valu
   return (
     <div className="col-span-6">
       <label htmlFor={elmId} className="block text-sm font-medium text-gray-700">
-      {title}
+        {title}
       </label>
 
       <div className="mt-2 relative rounded-md shadow-sm">
@@ -55,7 +55,7 @@ export const CopyField: React.FunctionComponent<ICopyFieldProps> = ({title, valu
         }
 
         <button className={`absolute text-white hover:text-yellow-100 inset-y-0 right-0 pr-3 items-center ${value ? 'flex' : 'hidden'}`} title={`Copy ${title}`} onClick={copyToClipboard}>
-          <ClipboardCopyIcon className="h-5 w-5" aria-hidden="true" />
+          <ClipboardIcon className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
     </div>
