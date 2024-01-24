@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useStatus from '../hooks/useStatus';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import { Footer } from './Footer';
 import { Issue } from './Issue';
@@ -10,7 +10,7 @@ import { Loading } from './Loading';
 import { DEFAULTS } from '../constants/Defaults';
 import { Statistics } from './Statistics';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend);
 
 export interface IStatusPageProps {
   url?: string;
