@@ -57,7 +57,7 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
           <img className={`h-8 sm:h-10`} src={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.daily}?user=estruyf&repo=github-visitors-badge&labelColor=%23555555&countColor=%23F0B354&label=Visitors today&style=default`} alt={`Daily visitors`} />
 
           <a href={`https://github.com/sponsors/estruyf`} title={`Support this project`}>
-            <img className={`h-8 sm:h-10`} src={`https://img.shields.io/badge/support_this_project-555555?style=flat-square&logo=githubsponsors&logoColor=%23FFFFFF&labelColor=%23EA4AAA`} alt={`Support this project`} />
+            <img className={`h-8 sm:h-10`} src={`https://img.shields.io/badge/support_this_project-555555?style=for-the-badge&logo=githubsponsors&logoColor=%23FFFFFF&labelColor=%23EA4AAA`} alt={`Support this project`} />
           </a>
         </p>
       </div>
