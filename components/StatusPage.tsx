@@ -19,7 +19,7 @@ export interface IStatusPageProps {
 }
 
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
-  const { loading, total, today, daily, pages, isSponsor } = useStatus(url, user, repo);
+  const { loading, total, today, daily, pages, isSponsor, days } = useStatus(url, user, repo);
 
   let bestCountry: string | undefined;
   let mostUsedBrowser: string | undefined;
@@ -106,12 +106,14 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
               <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly stats</h3>
 
-              <Statistics total={total}
+              <Statistics
+                total={total}
                 today={today}
                 dailyStats={daily}
                 pagesStats={pages}
                 bestBrowser={bestBrowser}
-                bestCountry={bestCountryData} />
+                bestCountry={bestCountryData}
+                daysNr={days} />
             </div>
           </section>
 

@@ -9,6 +9,7 @@ export interface StatusResult {
   dailyResults: DailyResult[];
   pageResults: PageResult[];
   isSponsored: boolean;
+  days: number;
 }
 
 export interface DailyResult {
@@ -31,6 +32,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
   const [daily, setDaily] = useState<DailyResult[]>([]);
   const [pages, setPages] = useState<PageResult[]>([]);
   const [isSponsor, setIsSponsor] = useState<boolean>(false);
+  const [days, setDays] = useState<number>(2);
 
   useEffect(() => {
     const getStatus = async (fallbackUrl?: string) => {
@@ -60,6 +62,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
           setDaily(data.dailyResults || []);
           setPages(data.pageResults || []);
           setIsSponsor(data.isSponsored || false);
+          setDays(data.days || 2);
         }
       }
 
@@ -79,6 +82,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
     daily,
     pages,
     isSponsor,
+    days,
     loading
   };
 }

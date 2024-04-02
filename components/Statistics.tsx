@@ -5,13 +5,14 @@ import { Statistic } from './Statistic';
 export interface IStatisticsProps {
   total: number;
   today: number;
+  days: number;
   dailyStats: DailyResult[];
   pagesStats: PageResult[];
   bestCountry: { title: string; value: number } | null;
   bestBrowser: { title: string; value: number } | null;
 }
 
-export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, total, today, bestCountry, bestBrowser }: React.PropsWithChildren<IStatisticsProps>) => {
+export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, days, total, today, bestCountry, bestBrowser }: React.PropsWithChildren<IStatisticsProps>) => {
 
   let bestDay: DailyResult | undefined;
   let bestPage: PageResult | undefined;
@@ -38,7 +39,7 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailySta
 
       {(today !== undefined && today !== null) && <Statistic title={`Today`} total={today} />}
 
-      {(dailyStats && dailyStats.length > 0) && <Statistic title={`Hits the last ${dailyStats.length} days`} total={dailyStats.map(d => d.total).reduce((a, b) => (a + b))} />}
+      {(dailyStats && dailyStats.length > 0) && <Statistic title={`Hits the last ${days} days`} total={dailyStats.map(d => d.total).reduce((a, b) => (a + b))} />}
 
       {(bestDay && bestDay.total) && <Statistic title={`Best day: ${bestDay.title}`} total={bestDay.total} />}
 
