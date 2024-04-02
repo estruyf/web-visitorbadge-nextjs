@@ -113,7 +113,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                 pagesStats={pages}
                 bestBrowser={bestBrowser}
                 bestCountry={bestCountryData}
-                daysNr={days} />
+                days={days} />
             </div>
           </section>
 
