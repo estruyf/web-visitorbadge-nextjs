@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-export interface IFooterProps {}
+export interface IFooterProps { }
 
 const navigation = {
   main: [
     { name: 'GitHub', href: 'https://github.com/estruyf/web-visitorbadge-nextjs' },
     { name: 'Buy me a coffee', href: 'https://www.buymeacoffee.com/zMeFRy9' },
     { name: 'Blog', href: 'https://www.eliostruyf.com' },
-    { name: 'Squarl', href: 'https://www.squarl.com' }
+    { name: 'Front Matter CMS', href: 'https://frontmatter.codes' }
   ],
   social: [
     {
@@ -47,6 +47,16 @@ const navigation = {
           />
         </svg>
       ),
+    },
+    {
+      name: 'Support the project',
+      href: 'https://github.com/sponsors/estruyf',
+      // eslint-disable-next-line react/display-name
+      icon: (props: any) => (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+          <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+        </svg>
+      ),
     }
   ]
 }
@@ -66,13 +76,13 @@ export const Footer: React.FunctionComponent<IFooterProps> = (props: React.Props
         </nav>
         <div className="mt-8 flex justify-center space-x-6">
           {navigation.social.map((item) => (
-            <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
+            <a key={item.name} href={item.href} className="text-gray-400 hover:text-blue-200">
               <span className="sr-only">{item.name}</span>
               <item.icon className="h-6 w-6" aria-hidden="true" />
             </a>
           ))}
         </div>
-        <p className="mt-8 text-center text-base text-gray-400">&copy; 2021 - Created by <a className={`text-blue-200`} href="https://www.eliostruyf.com" title={`Elio Struyf`}>Elio Struyf</a>. All rights reserved.</p>
+        <p className="mt-8 text-center text-base text-gray-400">&copy; 2024 - Created by <a className={`text-blue-200`} href="https://www.eliostruyf.com" title={`Elio Struyf`}>Elio Struyf</a>. All rights reserved.</p>
       </div>
     </footer>
   );

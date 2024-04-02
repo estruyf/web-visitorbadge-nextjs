@@ -3,8 +3,8 @@ import useStatus from '../hooks/useStatus';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import { Footer } from './Footer';
-import { Issue } from './Issue';
 import { Header } from './Header';
+import { Status } from './Status';
 import Head from 'next/head';
 import { Loading } from './Loading';
 import { DEFAULTS } from '../constants/Defaults';
@@ -19,7 +19,7 @@ export interface IStatusPageProps {
 }
 
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
-  const { loading, total, today, daily, pages } = useStatus(url, user, repo);
+  const { loading, total, today, daily, pages, isSponsor } = useStatus(url, user, repo);
 
   let bestCountry: string | undefined;
   let mostUsedBrowser: string | undefined;
@@ -50,7 +50,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     mostUsedBrowser = Object.keys(allBrowsers).length > 0 ? Object.keys(allBrowsers).reduce((a, b) => allBrowsers[a] > allBrowsers[b] ? a : b) : undefined;
   }
 
-  const getPath = () => {
+  const trackingPath = React.useMemo(() => {
     if (url) {
       return url;
     } else if (user && repo) {
@@ -58,7 +58,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     } else {
       return DEFAULTS.url;
     }
-  }
+  }, [url, user, repo]);
 
   const bestBrowser = mostUsedBrowser ? { title: mostUsedBrowser, value: allBrowsers[mostUsedBrowser] } : null;
   const bestCountryData = bestCountry ? { title: bestCountry, value: allCountries[bestCountry] } : null;
@@ -69,10 +69,10 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   return (
     <>
       <Head>
-        <title>Visitor overview for {getPath()}</title>
-        <meta name="description" content={`Visitor overview for ${getPath()}`} />
-        <meta property="og:description" content={`Visitor overview for ${getPath()}`} />
-        <meta property="twitter:description" content={`Visitor overview for ${getPath()}`} />
+        <title>Visitor overview for {trackingPath}</title>
+        <meta name="description" content={`Visitor overview for ${trackingPath}`} />
+        <meta property="og:description" content={`Visitor overview for ${trackingPath}`} />
+        <meta property="twitter:description" content={`Visitor overview for ${trackingPath}`} />
 
         <link rel="preconnect" href={process.env.NEXT_PUBLIC_VISITOR_API} />
 
@@ -95,7 +95,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex justify-center items-center pb-12">
               <h2 className={`text-3xl font-extrabold text-blue-500 font-heading`}>
-                Visitor overview for {getPath()}
+                Visitor overview for {trackingPath}
               </h2>
             </div>
           </div>
@@ -217,7 +217,10 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
           </section>
         </div>
 
-        <Issue disableTop />
+        <Status
+          username={trackingPath}
+          isSponsor={isSponsor}
+          hideTrackingInfo />
 
         <Footer />
 
