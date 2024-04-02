@@ -50,7 +50,7 @@ const navigation = {
     },
     {
       name: 'Support the project',
-      href: 'https://github.com/sponsors/estruyf',
+      href: process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK,
       // eslint-disable-next-line react/display-name
       icon: (props: any) => (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">

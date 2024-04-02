@@ -219,8 +219,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
 
         <Status
           username={trackingPath}
-          isSponsor={isSponsor}
-          hideTrackingInfo />
+          isSponsor={isSponsor} />
 
         <Footer />
 
