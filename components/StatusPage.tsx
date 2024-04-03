@@ -11,6 +11,7 @@ import { Statistics } from './Statistics';
 import { DailyChart } from './charts/DailyChart';
 import { CommonChart } from './charts/CommonChart';
 import { SponsorButton } from './SponsorButton';
+import useStatistics from '../hooks/useStatistics';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend);
 
@@ -22,35 +23,11 @@ export interface IStatusPageProps {
 
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
   const { loading, total, today, daily, pages, isSponsor, days } = useStatus(url, user, repo);
+  const { mostUsedBrowser, mostVisitedCountry, allBrowsers, allCountries } = useStatistics(daily);
 
-  let bestCountry: string | undefined;
-  let mostUsedBrowser: string | undefined;
-
-  let allCountries = {} as { [country: string]: number };
-  let allBrowsers = {} as { [country: string]: number };
-
-  if (daily.length > 0) {
-    for (const day of daily) {
-      for (const country in day.countries) {
-        if (allCountries[country]) {
-          allCountries[country] += day.countries[country];
-        } else {
-          allCountries[country] = day.countries[country];
-        }
-      }
-
-      for (const browser in day.browsers) {
-        if (allBrowsers[browser]) {
-          allBrowsers[browser] += day.browsers[browser];
-        } else {
-          allBrowsers[browser] = day.browsers[browser];
-        }
-      }
-    }
-
-    bestCountry = Object.keys(allCountries).length > 0 ? Object.keys(allCountries).reduce((a, b) => allCountries[a] > allCountries[b] ? a : b) : undefined;
-    mostUsedBrowser = Object.keys(allBrowsers).length > 0 ? Object.keys(allBrowsers).reduce((a, b) => allBrowsers[a] > allBrowsers[b] ? a : b) : undefined;
-  }
+  const sortedPages = React.useMemo(() => {
+    return pages.sort((a, b) => b.count - a.count).slice(0, 10);
+  }, [pages]);
 
   const trackingPath = React.useMemo(() => {
     if (url) {
@@ -62,19 +39,13 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     }
   }, [url, user, repo]);
 
-  const bestBrowser = mostUsedBrowser ? { title: mostUsedBrowser, value: allBrowsers[mostUsedBrowser] } : null;
-  const bestCountryData = bestCountry ? { title: bestCountry, value: allCountries[bestCountry] } : null;
-  const sortedBrowsers = Object.keys(allBrowsers).sort((a, b) => allBrowsers[b] - allBrowsers[a]).map(browser => ({ title: browser, value: allBrowsers[browser] }));
-  const sortedCountries = Object.keys(allCountries).sort((a, b) => allCountries[b] - allCountries[a]).map(country => ({ title: country === "-" ? "Unknown" : country, value: allCountries[country] }));
-  const sortedPages = pages.sort((a, b) => b.count - a.count).slice(0, 10);
-
   const showBrowserFullWidth = React.useMemo(() => {
-    return !sortedCountries || sortedCountries.length === 0;
-  }, [sortedCountries]);
+    return !allCountries || allCountries.length === 0;
+  }, [allCountries]);
 
   const showCountriesFullWidth = React.useMemo(() => {
-    return !sortedBrowsers || sortedBrowsers.length === 0;
-  }, [sortedBrowsers]);
+    return !allBrowsers || allBrowsers.length === 0;
+  }, [allBrowsers]);
 
   return (
     <>
@@ -137,8 +108,8 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                 today={today}
                 dailyStats={daily}
                 pagesStats={pages}
-                bestBrowser={bestBrowser}
-                bestCountry={bestCountryData}
+                bestBrowser={mostUsedBrowser}
+                bestCountry={mostVisitedCountry}
                 days={days} />
             </div>
           </section>
@@ -153,13 +124,13 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                 <CommonChart
                   title={`Browsers`}
                   label={`Browsers`}
-                  stats={sortedBrowsers}
+                  stats={allBrowsers}
                   fullWidth={showBrowserFullWidth} />
 
                 <CommonChart
                   title={`Countries`}
                   label={`Countries`}
-                  stats={sortedCountries}
+                  stats={allCountries}
                   fullWidth={showCountriesFullWidth} />
 
                 <CommonChart
@@ -179,7 +150,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         <Footer />
 
         <a className='hidden' href="https://visitorbadge.io/status?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus" title="Status of status page" rel="nofollow" >
-          <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759" />
+          <img src={`https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759&slug=${trackingPath}`} />
         </a>
       </div>
     </>

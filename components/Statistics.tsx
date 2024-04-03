@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Statistic } from './Statistic';
-import { DailyResult, PageResult } from '../models';
+import { CommonStatistic, DailyResult, PageResult } from '../models';
 
 export interface IStatisticsProps {
   total: number;
@@ -8,8 +8,8 @@ export interface IStatisticsProps {
   days: number;
   dailyStats: DailyResult[];
   pagesStats: PageResult[];
-  bestCountry: { title: string; value: number } | null;
-  bestBrowser: { title: string; value: number } | null;
+  bestCountry: CommonStatistic | undefined;
+  bestBrowser: CommonStatistic | undefined;
 }
 
 export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, days, total, today, bestCountry, bestBrowser }: React.PropsWithChildren<IStatisticsProps>) => {
