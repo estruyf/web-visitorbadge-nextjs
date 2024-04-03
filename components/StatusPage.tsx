@@ -68,6 +68,14 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   const sortedCountries = Object.keys(allCountries).sort((a, b) => allCountries[b] - allCountries[a]).map(country => ({ title: country === "-" ? "Unknown" : country, value: allCountries[country] }));
   const sortedPages = pages.sort((a, b) => b.count - a.count).slice(0, 10);
 
+  const showBrowserFullWidth = React.useMemo(() => {
+    return !sortedCountries || sortedCountries.length === 0;
+  }, [sortedCountries]);
+
+  const showCountriesFullWidth = React.useMemo(() => {
+    return !sortedBrowsers || sortedBrowsers.length === 0;
+  }, [sortedBrowsers]);
+
   return (
     <>
       <Head>
@@ -145,12 +153,14 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                 <CommonChart
                   title={`Browsers`}
                   label={`Browsers`}
-                  stats={sortedBrowsers} />
+                  stats={sortedBrowsers}
+                  fullWidth={showBrowserFullWidth} />
 
                 <CommonChart
                   title={`Countries`}
                   label={`Countries`}
-                  stats={sortedCountries} />
+                  stats={sortedCountries}
+                  fullWidth={showCountriesFullWidth} />
 
                 <CommonChart
                   title={`Pages/Slug`}

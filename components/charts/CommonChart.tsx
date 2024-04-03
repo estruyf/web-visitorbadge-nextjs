@@ -28,7 +28,7 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
       </h3>
 
       <Bar
-        height={fullWidth ? 150 : 300}
+        height={fullWidth ? 100 : 200}
         data={{
           labels: stats.map(r => r.title),
           datasets: [
