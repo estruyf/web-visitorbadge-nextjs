@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { DailyResult, PageResult } from '../hooks/useStatus';
 import { Statistic } from './Statistic';
+import { DailyResult, PageResult } from '../models';
 
 export interface IStatisticsProps {
   total: number;

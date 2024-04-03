@@ -1,28 +1,7 @@
-import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { API } from '../constants/API';
 import { DEFAULTS } from '../constants/Defaults';
-
-export interface StatusResult {
-  total: number;
-  today: number;
-  dailyResults: DailyResult[];
-  pageResults: PageResult[];
-  isSponsored: boolean;
-  days: number;
-}
-
-export interface DailyResult {
-  title: string;
-  total: number;
-  countries: { [country: string]: number };
-  browsers: { [browser: string]: number };
-}
-
-export interface PageResult {
-  url: string;
-  count: number;
-}
+import { DailyResult, PageResult, StatusResult } from '../models';
 
 export default function useStatus(url: string = "", user: string = "", repo: string = "") {
 
@@ -31,7 +10,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
   const [today, setToday] = useState(0);
   const [daily, setDaily] = useState<DailyResult[]>([]);
   const [pages, setPages] = useState<PageResult[]>([]);
-  const [isSponsor, setIsSponsor] = useState<boolean>(false);
+  const [isSponsor, setIsSponsor] = useState<boolean | undefined>(undefined);
   const [days, setDays] = useState<number>(2);
 
   useEffect(() => {

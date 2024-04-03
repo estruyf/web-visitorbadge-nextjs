@@ -1,5 +1,5 @@
-import { HeartIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
+import { SponsorButton } from './SponsorButton';
 
 export interface ISponsorProps {
   isSponsor?: boolean;
@@ -28,15 +28,7 @@ export const Sponsor: React.FunctionComponent<ISponsorProps> = ({
               Each € 1.50 in sponsorship is equal to 1 URL to view 7 day analytics. If you want to track multiple URLs, you can increase the quantity and specify additional URLs.
             </p>
 
-            <a
-              href={process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK}
-              className="inline-flex items-center gap-x-2 rounded-md bg-blue-300 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              <HeartIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-              Support the project
-            </a>
+            <SponsorButton />
           </>
         )
       }

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import useStatus from '../hooks/useStatus';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { Status } from './Status';
@@ -9,6 +8,9 @@ import Head from 'next/head';
 import { Loading } from './Loading';
 import { DEFAULTS } from '../constants/Defaults';
 import { Statistics } from './Statistics';
+import { DailyChart } from './charts/DailyChart';
+import { CommonChart } from './charts/CommonChart';
+import { SponsorButton } from './SponsorButton';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend);
 
@@ -91,20 +93,36 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
       <div className={`bg-white flex flex-col h-screen`}>
         <Header labelColor={`#555555`} countColor={`#263759`} badgeStyle={`default`} />
 
-        <header>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex justify-center items-center pb-12">
-              <h2 className={`text-3xl font-extrabold text-blue-500 font-heading`}>
-                Visitor overview for {trackingPath}
-              </h2>
-            </div>
+        <div className="relative">
+          <div className="absolute inset-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="w-full h-full object-cover"
+              src="https://images.unsplash.com/photo-1597733336794-12d05021d510?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&&sat=-100"
+              alt="" />
+            <div className="absolute inset-0 bg-blue-400 mix-blend-multiply" aria-hidden="true" />
           </div>
-        </header>
+
+          <div className="relative max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8 space-y-4">
+            <h1 className="text-5xl font-extrabold text-white font-heading">
+              Visitor Badge - Statistics
+            </h1>
+            <p className="text-xl leading-6 text-gray-200">
+              Overview for {trackingPath}
+            </p>
+
+            {
+              typeof isSponsor !== "undefined" && !isSponsor && (
+                <SponsorButton isDark />
+              )
+            }
+          </div>
+        </div>
 
         <div className={`flex-grow`}>
           <section className={`bg-gray-50 mb-12 border-t border-b border-gray-300`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-              <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly stats</h3>
+              <h2 className="font-heading text-3xl leading-6 font-medium text-blue-500">Stats of the last {days} days</h2>
 
               <Statistics
                 total={total}
@@ -118,102 +136,27 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
           </section>
 
           <section>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
-              <h3 className="font-heading text-2xl leading-6 font-medium text-blue-500">Weekly charts</h3>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 space-y-16">
+              <h2 className="font-heading text-3xl leading-6 font-medium text-blue-500">Charts of the last {days} days</h2>
 
-              {
-                (daily && daily.length > 0) && (
-                  <Line
-                    height={100}
-                    data={{
-                      labels: daily.map(r => r.title),
-                      datasets: [
-                        {
-                          label: 'Daily visitors',
+              <DailyChart stats={daily} />
 
-                          data: daily.map(r => r.total),
-                          fill: true,
-                          borderWidth: 1,
-                          borderColor: '#CC8312',
-                          backgroundColor: "#FCF2E1",
-                          pointRadius: 5,
-                        }
-                      ]
-                    }}
-                  />
-                )
-              }
+              <div className={`mt-16 grid grid-cols-12 gap-16`}>
+                <CommonChart
+                  title={`Browsers`}
+                  label={`Browsers`}
+                  stats={sortedBrowsers} />
 
-              <div className={`mt-16 grid grid-cols-12 gap-6`}>
+                <CommonChart
+                  title={`Countries`}
+                  label={`Countries`}
+                  stats={sortedCountries} />
 
-                {
-                  (sortedBrowsers && sortedBrowsers.length > 0) && (
-                    <div className={`col-span-12 sm:mt-0 sm:col-span-6`}>
-                      <Bar
-                        height={300}
-                        data={{
-                          labels: sortedBrowsers.map(r => r.title),
-                          datasets: [
-                            {
-                              label: 'Browsers',
-                              data: sortedBrowsers.map(r => r.value),
-                              borderWidth: 1,
-                              borderColor: '#CC8312',
-                              backgroundColor: "#FCF2E1",
-                              indexAxis: 'y'
-                            }
-                          ]
-                        }}
-                      />
-                    </div>
-                  )
-                }
-
-                {
-                  (sortedCountries && sortedCountries.length > 0) && (
-                    <div className={`mt-12 col-span-12 sm:mt-0 sm:col-span-6`}>
-                      <Bar
-                        height={300}
-                        data={{
-                          labels: sortedCountries.map(r => r.title),
-                          datasets: [
-                            {
-                              label: 'Countries',
-                              data: sortedCountries.map(r => r.value),
-                              borderWidth: 1,
-                              borderColor: '#CC8312',
-                              backgroundColor: "#FCF2E1",
-                              indexAxis: 'y'
-                            }
-                          ]
-                        }}
-                      />
-                    </div>
-                  )
-                }
-
-                {
-                  (sortedPages && sortedPages.length > 0) && (
-                    <div className={`mt-12 col-span-12 sm:mt-0 sm:col-span-12`}>
-                      <Bar
-                        height={150}
-                        data={{
-                          labels: sortedPages.map(r => r.url),
-                          datasets: [
-                            {
-                              label: 'Pages/Slug',
-                              data: sortedPages.map(r => r.count),
-                              borderWidth: 1,
-                              borderColor: '#CC8312',
-                              backgroundColor: "#FCF2E1",
-                              indexAxis: 'y'
-                            }
-                          ]
-                        }}
-                      />
-                    </div>
-                  )
-                }
+                <CommonChart
+                  title={`Pages/Slug`}
+                  label={`Pages/Slug`}
+                  stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
+                  fullWidth />
               </div>
             </div>
           </section>
