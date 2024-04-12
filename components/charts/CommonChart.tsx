@@ -8,6 +8,7 @@ export interface ICommonChartProps {
     title: string;
     value: number;
   }[];
+  height: number;
   fullWidth?: boolean;
 }
 
@@ -15,6 +16,7 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
   title,
   label,
   stats,
+  height,
   fullWidth,
 }: React.PropsWithChildren<ICommonChartProps>) => {
   if (!stats || stats.length === 0) {
@@ -28,7 +30,7 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
       </h3>
 
       <Bar
-        height={fullWidth ? 100 : 200}
+        height={height}
         data={{
           labels: stats.map(r => r.title),
           datasets: [
