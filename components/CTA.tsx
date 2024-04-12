@@ -39,13 +39,13 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
         {
           total?.totalBadges && total.totalBadges > 0 && (
             <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">
-              Come and join <span className="text-yellow-500">{total.totalBadges}</span> others using our service.
+              Come and join <span className="text-yellow-500">{total.totalBadges.toLocaleString()}</span> others using our service.
             </h2>
           )
         }
         {
           total?.totalHits && total.totalHits > 0 && (
-            <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">With a total of <span className="text-yellow-500">{total.totalHits}</span> hits.</h2>
+            <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">With a total of <span className="text-yellow-500">{total.totalHits.toLocaleString()}</span> hits.</h2>
           )
         }
         <p className="mt-4 text-xl leading-6 text-gray-200">
