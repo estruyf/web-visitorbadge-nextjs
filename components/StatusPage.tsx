@@ -47,6 +47,14 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     return !allBrowsers || allBrowsers.length === 0;
   }, [allBrowsers]);
 
+  const commonStatsHeight = React.useMemo(() => {
+    return Math.max(allBrowsers.length, allCountries.length) * 10;
+  }, [allBrowsers, allCountries]);
+
+  const pagesHeight = React.useMemo(() => {
+    return sortedPages.length * 10;
+  }, [sortedPages]);
+
   return (
     <>
       <Head>
@@ -125,18 +133,21 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                   title={`Browsers`}
                   label={`Browsers`}
                   stats={allBrowsers}
+                  height={commonStatsHeight}
                   fullWidth={showBrowserFullWidth} />
 
                 <CommonChart
                   title={`Countries`}
                   label={`Countries`}
                   stats={allCountries}
+                  height={commonStatsHeight}
                   fullWidth={showCountriesFullWidth} />
 
                 <CommonChart
                   title={`Pages/Slug`}
                   label={`Pages/Slug`}
                   stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
+                  height={pagesHeight}
                   fullWidth />
               </div>
             </div>
