@@ -49,7 +49,7 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
           )
         }
         <p className="mt-4 text-xl leading-6 text-gray-200">
-          Looking to display visitor statistics for your website or GitHub profiles? Easily generate visitor counters and badges by completing the form below. Simply copy the Markdown or HTML code provided and place it wherever you'd like on your page.
+          Looking to display visitor statistics for your website or GitHub profiles? Easily generate visitor counters and badges by completing the form below. Simply copy the Markdown or HTML code provided and place it wherever you&apos;d like on your page.
         </p>
 
         <p className="mt-8 flex space-x-8 justify-center items-center">
