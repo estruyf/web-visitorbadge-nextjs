@@ -34,7 +34,7 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
 
       <div className="relative max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
         <h1 className="text-5xl font-extrabold text-white font-heading">
-          A simple visitor badge for your website
+          A visitor counter for your website or GitHub profile
         </h1>
         {
           total?.totalBadges && total.totalBadges > 0 && (
@@ -49,7 +49,7 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
           )
         }
         <p className="mt-4 text-xl leading-6 text-gray-200">
-          Want to show how many visitors your site/GitHub profiles gets? Quickly fill in the form on the page, and copy the Markdown or HTML code to the location you want to use it.
+          Looking to display visitor statistics for your website or GitHub profiles? Easily generate visitor counters and badges by completing the form below. Simply copy the Markdown or HTML code provided and place it wherever you'd like on your page.
         </p>
 
         <p className="mt-8 flex space-x-8 justify-center items-center">
