@@ -73,6 +73,8 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
 
         <meta property="twitter:url" content="https://www.visitorbadge.io/status" />
         <meta property="og:url" content="https://www.visitorbadge.io/status" />
+
+        <meta name="robots" content="noindex" />
       </Head>
 
       {loading && <Loading />}
