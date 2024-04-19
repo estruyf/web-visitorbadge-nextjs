@@ -129,10 +129,10 @@ export default function Home() {
 
   return <>
     <Head>
-      <title>Create your visitor badge</title>
-      <meta name="description" content="Create your visitor badge which you can use on your website or GitHub profile." />
-      <meta property="og:description" content="Create your visitor badge which you can use on your website or GitHub profile." />
-      <meta property="twitter:description" content="Create your visitor badge which you can use on your website or GitHub profile." />
+      <title>Create your visitor counter/badge</title>
+      <meta name="description" content="Create your visitor counter/badge which you can use on your website or GitHub profile." />
+      <meta property="og:description" content="Create your visitor counter/badge which you can use on your website or GitHub profile." />
+      <meta property="twitter:description" content="Create your visitor counter/badge which you can use on your website or GitHub profile." />
 
       <link rel="preconnect" href={process.env.NEXT_PUBLIC_VISITOR_API} />
 
@@ -154,7 +154,7 @@ export default function Home() {
       username={debounceUsername}>
       <div>
         <div className="pb-4 border-b border-gray-200">
-          <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor badge</h3>
+          <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor counter/badge</h3>
           <p className="mt-2 max-w-4xl text-base text-gray-500">
             Fill in the following form to get your visitor badge Markdown and image URL.
           </p>

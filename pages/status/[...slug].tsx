@@ -12,6 +12,6 @@ export default function Status() {
   if (user && repo) {
     return <StatusPage user={user} repo={repo} />;
   }
-  
+
   return null;
 }

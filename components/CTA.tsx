@@ -4,7 +4,31 @@ import { API } from '../constants/API';
 export interface ICTAProps { }
 
 export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithChildren<ICTAProps>) => {
-  const [total, setTotal] = React.useState<{ totalBadges: number; totalHits: number } | null>(null);
+  const [total, setTotal] = React.useState<{ totalBadges: number; totalHits: number, diffBadges: number, diffHits: number } | null>(null);
+
+  const subTitle = React.useMemo(() => {
+    const totalBadges = total?.totalBadges || 0;
+    const totalHits = total?.totalHits || 0;
+    const newBadges = total?.diffBadges || 0;
+
+    if (totalBadges > 0 && newBadges > 0) {
+      return (
+        <h2 className="text-2xl mt-4 font-extrabold text-white font-heading leading-8">
+          With a total of <span className="text-yellow-500">{totalBadges.toLocaleString()}</span> badges created and <span className="text-yellow-500">{totalHits.toLocaleString()}</span> hits tracked. 🚀
+          {
+            newBadges > 0 && (
+              <>
+                <br />
+                <span className="text-yellow-500">{newBadges.toLocaleString()}</span> new badges were created in the last 24 hours.
+              </>
+            )
+          }
+        </h2>
+      );
+    }
+
+    return null;
+  }, [total]);
 
   React.useEffect(() => {
     const getTotal = async () => {
@@ -34,25 +58,16 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
 
       <div className="relative max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
         <h1 className="text-5xl font-extrabold text-white font-heading">
-          A visitor counter for your website or GitHub profile
+          Visitor counters for your website or GitHub profile
         </h1>
-        {
-          total?.totalBadges && total.totalBadges > 0 && (
-            <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">
-              Come and join <span className="text-yellow-500">{total.totalBadges.toLocaleString()}</span> others using our service.
-            </h2>
-          )
-        }
-        {
-          total?.totalHits && total.totalHits > 0 && (
-            <h2 className="text-3xl mt-4 font-extrabold text-white font-heading">With a total of <span className="text-yellow-500">{total.totalHits.toLocaleString()}</span> hits.</h2>
-          )
-        }
+
+        {subTitle}
+
         <p className="mt-4 text-xl leading-6 text-gray-200">
           Looking to display visitor statistics for your website or GitHub profiles? Easily generate visitor counters and badges by completing the form below. Simply copy the Markdown or HTML code provided and place it wherever you&apos;d like on your page.
         </p>
 
-        <p className="mt-8 flex space-x-8 justify-center items-center">
+        <p className="mt-8 flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 justify-center items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className={`h-8 sm:h-10`} src={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.daily}?user=estruyf&repo=github-visitors-badge&labelColor=%23555555&countColor=%23F0B354&label=Visitors today&style=default`} alt={`Daily visitors`} />
 

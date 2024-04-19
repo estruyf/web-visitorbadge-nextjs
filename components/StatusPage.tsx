@@ -26,7 +26,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   const { mostUsedBrowser, mostVisitedCountry, allBrowsers, allCountries } = useStatistics(daily);
 
   const sortedPages = React.useMemo(() => {
-    return pages.sort((a, b) => b.count - a.count).slice(0, 10);
+    return pages.sort((a, b) => b.count - a.count).slice(0, 25);
   }, [pages]);
 
   const trackingPath = React.useMemo(() => {
@@ -146,7 +146,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
                   fullWidth={showCountriesFullWidth} />
 
                 <CommonChart
-                  title={`Pages/Slug`}
+                  title={`Pages/Slug ${pages.length > 25 ? "(Top 25)" : ""}`}
                   label={`Pages/Slug`}
                   stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
                   height={pagesHeight}
