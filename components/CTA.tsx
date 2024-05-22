@@ -10,17 +10,18 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
     const totalBadges = total?.totalBadges || 0;
     const totalHits = total?.totalHits || 0;
     const newBadges = total?.diffBadges || 0;
+    const diffHits = total?.diffHits || 0;
 
     if (totalBadges > 0 && newBadges > 0) {
       return (
-        <h2 className="text-2xl mt-4 font-extrabold text-white font-heading leading-8">
-          With a total of <span className="text-yellow-500">{totalBadges.toLocaleString()}</span> badges created and <span className="text-yellow-500">{totalHits.toLocaleString()}</span> hits tracked. 🚀
+        <h2 className="text-2xl mt-4 font-extrabold text-white font-heading leading-8 space-y-1">
+          <p>With a total of <span className="text-yellow-500">{totalBadges.toLocaleString()}</span> badges created and <span className="text-yellow-500">{totalHits.toLocaleString()}</span> hits tracked. 🚀</p>
+
           {
-            newBadges > 0 && (
-              <>
-                <br />
-                <span className="text-yellow-500">{newBadges.toLocaleString()}</span> new badges were created in the last 24 hours.
-              </>
+            diffHits > 0 && newBadges > 0 && (
+              <p>
+                In the last 24 hours, we generated <span className="text-yellow-500">{diffHits.toLocaleString()}</span> badges of which <span className="text-yellow-500">{newBadges.toLocaleString()}</span> were new.
+              </p>
             )
           }
         </h2>

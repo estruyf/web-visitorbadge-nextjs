@@ -9,7 +9,6 @@ import { Favicons } from '../components/Favicons';
 import { CopyField } from '../components/CopyField';
 import Link from 'next/link';
 import { useDebounce } from '../hooks/useDebounce';
-import { HeartIcon } from '@heroicons/react/24/solid';
 
 const defaultLabelColor = "#555555";
 
