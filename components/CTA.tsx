@@ -4,23 +4,23 @@ import { API } from '../constants/API';
 export interface ICTAProps { }
 
 export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithChildren<ICTAProps>) => {
-  const [total, setTotal] = React.useState<{ totalBadges: number; totalHits: number, diffBadges: number, diffHits: number } | null>(null);
+  const [total, setTotal] = React.useState<{ totalBadges: number; totalHits: number, yesterdayBadges: number, yesterdayHits: number, } | null>(null);
 
   const subTitle = React.useMemo(() => {
     const totalBadges = total?.totalBadges || 0;
     const totalHits = total?.totalHits || 0;
-    const newBadges = total?.diffBadges || 0;
-    const diffHits = total?.diffHits || 0;
+    const yesterdayBadges = total?.yesterdayBadges || 0;
+    const yesterdayHits = total?.yesterdayHits || 0;
 
-    if (totalBadges > 0 && newBadges > 0) {
+    if (totalBadges > 0 && totalBadges > 0) {
       return (
         <h2 className="text-2xl mt-4 font-extrabold text-white font-heading leading-8 space-y-1">
           <p>With a total of <span className="text-yellow-500">{totalBadges.toLocaleString()}</span> badges created and <span className="text-yellow-500">{totalHits.toLocaleString()}</span> hits tracked. 🚀</p>
 
           {
-            diffHits > 0 && newBadges > 0 && (
+            yesterdayHits > 0 && yesterdayBadges > 0 && (
               <p>
-                In the last 24 hours, we generated <span className="text-yellow-500">{diffHits.toLocaleString()}</span> badges of which <span className="text-yellow-500">{newBadges.toLocaleString()}</span> were new.
+                Yesterday, we generated <span className="text-yellow-500">{yesterdayHits.toLocaleString()}</span> badges of which <span className="text-yellow-500">{yesterdayBadges.toLocaleString()}</span> were new.
               </p>
             )
           }
