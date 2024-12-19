@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Image from "next/image";
 
 export interface IFooterProps { }
 
@@ -90,6 +91,18 @@ export const Footer: React.FunctionComponent<IFooterProps> = (props: React.Props
             </a>
           ))}
         </div>
+
+        <div className="mt-8 flex justify-center">
+          <a href="https://struyfconsulting.com" title="Hire Elio Struyf via Struyf Consulting">
+            <Image
+              src={`/struyf-consulting.webp`}
+              alt='Struyf Consulting Logo'
+              height={25}
+              width={281}
+            />
+          </a>
+        </div>
+
         <p className="mt-8 text-center text-base text-gray-400">&copy; 2024 - Created by <a className={`text-blue-200`} href="https://www.eliostruyf.com" title={`Elio Struyf`}>Elio Struyf</a>. All rights reserved.</p>
       </div>
     </footer>
