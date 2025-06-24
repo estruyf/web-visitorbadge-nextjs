@@ -48,11 +48,11 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   }, [allBrowsers]);
 
   const commonStatsHeight = React.useMemo(() => {
-    return Math.max(allBrowsers.length, allCountries.length) * 10;
+    return Math.max(Math.max(allBrowsers.length, allCountries.length) * 15, 100);
   }, [allBrowsers, allCountries]);
 
   const pagesHeight = React.useMemo(() => {
-    return sortedPages.length * 10;
+    return Math.max(sortedPages.length * 15, 150);
   }, [sortedPages]);
 
   return (
@@ -130,7 +130,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
 
               <DailyChart stats={daily} />
 
-              <div className={`mt-16 grid grid-cols-12 gap-16`}>
+              <div className={`mt-16 grid grid-cols-12 gap-6`}>
                 <CommonChart
                   title={`Browsers`}
                   label={`Browsers`}

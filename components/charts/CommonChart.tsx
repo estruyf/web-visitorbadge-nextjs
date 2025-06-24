@@ -24,7 +24,7 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
   }
 
   return (
-    <section className={`space-y-4 col-span-12 sm:mt-0 ${fullWidth ? '' : 'sm:col-span-6'}`}>
+    <section className={`space-y-4 col-span-12 ${fullWidth ? '' : 'lg:col-span-6'}`}>
       <h3 className='font-heading text-xl leading-6 font-medium text-blue-500'>
         {title}
       </h3>
@@ -43,6 +43,37 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
               indexAxis: 'y'
             }
           ]
+        }}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              right: 20
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                display: true
+              }
+            },
+            y: {
+              ticks: {
+                display: true,
+                maxRotation: 0,
+                callback: function(value, index) {
+                  const label = stats[index]?.title || '';
+                  return label.length > 30 ? label.substring(0, 30) + '...' : label;
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
         }}
       />
     </section>
