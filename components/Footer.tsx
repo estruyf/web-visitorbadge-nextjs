@@ -92,6 +92,30 @@ export const Footer: React.FunctionComponent<IFooterProps> = (props: React.Props
           ))}
         </div>
 
+        <div className="mt-8 flex flex-col items-center space-y-4">
+          <h3 className="text-xl font-bold text-gray-500">
+            Premium Sponsors
+          </h3>
+          <div className="flex items-center space-x-2">
+            <a
+              href="https://www.coderabbit.ai/?utm_source=visitorbadge&utm_campaign=oss"
+              title="Supported by CodeRabbit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center"
+            >
+              <Image
+                src="coderabbit-orange.svg"
+                alt="CodeRabbit Logo"
+                width={250}
+                height={40}
+              />
+            </a>
+          </div>
+        </div>
+
+        <hr className="my-8 border-gray-200" />
+
         <div className="mt-8 flex justify-center">
           <a href="https://struyfconsulting.com" title="Hire Elio Struyf via Struyf Consulting">
             <Image
@@ -103,7 +127,9 @@ export const Footer: React.FunctionComponent<IFooterProps> = (props: React.Props
           </a>
         </div>
 
-        <p className="mt-8 text-center text-base text-gray-400">&copy; 2024 - Created by <a className={`text-blue-200`} href="https://www.eliostruyf.com" title={`Elio Struyf`}>Elio Struyf</a>. All rights reserved.</p>
+        <p className="mt-8 text-center text-base text-gray-400">
+          &copy; {new Date().getFullYear()} - Created by <a className="text-blue-200" href="https://www.eliostruyf.com" title="Elio Struyf">Elio Struyf</a>. All rights reserved.
+        </p>
       </div>
     </footer>
   );
