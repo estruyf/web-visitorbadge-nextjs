@@ -29,22 +29,34 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
         {title}
       </h3>
 
-      <Bar
-        height={height}
-        data={{
-          labels: stats.map(r => r.title),
-          datasets: [
-            {
-              label,
-              data: stats.map(r => r.value),
-              borderWidth: 1,
-              borderColor: '#CC8312',
-              backgroundColor: "#FCF2E1",
-              indexAxis: 'y'
-            }
-          ]
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: Math.max(200, stats.length * 10), // Dynamically set height based on number of bars
+          minHeight: 200,
         }}
-      />
+      >
+        <Bar
+          options={{
+            maintainAspectRatio: false,
+            responsive: true,
+          }}
+          data={{
+            labels: stats.map(r => r.title),
+            datasets: [
+              {
+                label,
+                data: stats.map(r => r.value),
+                borderWidth: 1,
+                borderColor: '#CC8312',
+                backgroundColor: "#FCF2E1",
+                indexAxis: 'y'
+              }
+            ]
+          }}
+        />
+      </div>
     </section>
   );
 };
