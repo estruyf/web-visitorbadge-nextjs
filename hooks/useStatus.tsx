@@ -13,6 +13,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
   const [isSponsor, setIsSponsor] = useState<boolean | undefined>(undefined);
   const [days, setDays] = useState<number>(2);
 
+
   useEffect(() => {
     const getStatus = async (fallbackUrl?: string) => {
       setLoading(true);
@@ -31,18 +32,23 @@ export default function useStatus(url: string = "", user: string = "", repo: str
         return;
       }
 
-      const resp = await fetch(`${process.env.NEXT_PUBLIC_VISITOR_API}${API.status}${query}`);
+      try {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_VISITOR_API}${API.status}${query}`);
 
-      if (resp && resp.ok) {
-        const data: StatusResult = await resp.json();
-        if (data) {
-          setTotal(data.total || 0);
-          setToday(data.today || 0);
-          setDaily(data.dailyResults || []);
-          setPages(data.pageResults || []);
-          setIsSponsor(data.isSponsored || false);
-          setDays(data.days || 2);
+        if (resp && resp.ok) {
+          const data: StatusResult = await resp.json();
+          if (data) {
+            setTotal(data.total || 0);
+            setToday(data.today || 0);
+            setDaily(data.dailyResults || []);
+            setPages(data.pageResults || []);
+            setIsSponsor(data.isSponsored || false);
+            setDays(data.days || 2);
+
+          }
         }
+      } catch (error) {
+        console.error('API request failed:', error);
       }
 
       setLoading(false);

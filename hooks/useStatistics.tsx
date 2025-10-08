@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CommonStatistic, DailyResult } from '../models';
 
 export default function useStatistics(daily: DailyResult[]) {
@@ -7,6 +7,8 @@ export default function useStatistics(daily: DailyResult[]) {
 
   const [mostVisitedCountry, setMostVisitedCountry] = useState<CommonStatistic | undefined>(undefined);
   const [allCountries, setAllCountries] = useState<CommonStatistic[]>([]);
+
+
 
   useEffect(() => {
     if (!daily || daily.length === 0) {
@@ -41,13 +43,16 @@ export default function useStatistics(daily: DailyResult[]) {
 
     const sortedBrowsers = Object.keys(crntBrowsers)
       .sort((a, b) => crntBrowsers[b] - crntBrowsers[a])
-      .map(browser => ({ title: browser, value: crntBrowsers[browser] }));
+      .map(browser => ({ title: browser, value: crntBrowsers[browser] }))
+      .slice(0, 10); // Limit to top 10 browsers
 
     setAllBrowsers(sortedBrowsers);
 
     const sortedCountries = Object.keys(crntCountries)
       .sort((a, b) => crntCountries[b] - crntCountries[a])
-      .map(country => ({ title: country === "-" ? "Unknown" : country, value: crntCountries[country] }));
+      .map(country => ({ title: country === "-" ? "Unknown" : country, value: crntCountries[country] }))
+      .slice(0, 12); // Limit to top 12 countries for better readability
+
     setAllCountries(sortedCountries);
 
     // Find the country with the most visits

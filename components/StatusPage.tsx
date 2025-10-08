@@ -8,7 +8,7 @@ import Head from 'next/head';
 import { Loading } from './Loading';
 import { DEFAULTS } from '../constants/Defaults';
 import { Statistics } from './Statistics';
-import { DailyChart } from './charts/DailyChart';
+import { DailyChart, DailyDetails } from './charts/DailyChart';
 import { CommonChart } from './charts/CommonChart';
 import { SponsorButton } from './SponsorButton';
 import useStatistics from '../hooks/useStatistics';
@@ -24,6 +24,9 @@ export interface IStatusPageProps {
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
   const { loading, total, today, daily, pages, isSponsor, days } = useStatus(url, user, repo);
   const { mostUsedBrowser, mostVisitedCountry, allBrowsers, allCountries } = useStatistics(daily);
+
+  // State for daily details modal
+  const [selectedDailyData, setSelectedDailyData] = React.useState<{ date: string; data: any } | null>(null);
 
   const sortedPages = React.useMemo(() => {
     return pages.sort((a, b) => b.count - a.count).slice(0, 25);
@@ -52,8 +55,21 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   }, [allBrowsers, allCountries]);
 
   const pagesHeight = React.useMemo(() => {
-    return sortedPages.length * 10;
+    // More generous height calculation for better readability
+    const baseHeight = 500;
+    const perItemHeight = 25;
+    return Math.max(baseHeight, sortedPages.length * perItemHeight);
   }, [sortedPages]);
+
+  // Handler for date selection in daily chart
+  const handleDateSelect = React.useCallback((date: string, data: any) => {
+    setSelectedDailyData({ date, data });
+  }, []);
+
+  // Handler to close daily details modal
+  const handleCloseDailyDetails = React.useCallback(() => {
+    setSelectedDailyData(null);
+  }, []);
 
   return (
     <>
@@ -109,9 +125,16 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         </div>
 
         <div className={`flex-grow`}>
-          <section className={`bg-gray-50 mb-12 border-t border-b border-gray-300`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-              <h2 className="font-heading text-3xl leading-6 font-medium text-blue-500">Stats of the last {days} days</h2>
+          <section className={`bg-gradient-to-r from-gray-50 to-blue-50 mb-12 border-t border-b border-gray-200 shadow-sm`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+              <div className="text-center mb-8">
+                <h2 className="font-heading text-4xl leading-8 font-bold text-gray-900 mb-4">
+                  Analytics Overview
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Comprehensive statistics for the last {days} days
+                </p>
+              </div>
 
               <Statistics
                 total={total}
@@ -124,33 +147,52 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
             </div>
           </section>
 
-          <section>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 space-y-16">
-              <h2 className="font-heading text-3xl leading-6 font-medium text-blue-500">Charts of the last {days} days</h2>
+          <section className="bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 space-y-8 py-16">
+              <div className="text-center">
+                <h2 className="font-heading text-4xl leading-8 font-bold text-gray-900 mb-4">
+                  Interactive Charts
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Detailed analytics and trends for the last {days} days
+                </p>
+              </div>
 
-              <DailyChart stats={daily} />
+              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+                <DailyChart
+                  stats={daily}
+                  onDateSelect={handleDateSelect}
+                  selectedDate={selectedDailyData?.date}
+                />
+              </div>
 
-              <div className={`mt-16 grid grid-cols-12 gap-16`}>
-                <CommonChart
-                  title={`Browsers`}
-                  label={`Browsers`}
-                  stats={allBrowsers}
-                  height={commonStatsHeight}
-                  fullWidth={showBrowserFullWidth} />
+              <div className={`grid grid-cols-12 gap-8`}>
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 col-span-12 sm:col-span-6">
+                  <CommonChart
+                    title={`Top 10 Browsers`}
+                    label={`Browsers`}
+                    stats={allBrowsers}
+                    height={commonStatsHeight}
+                    fullWidth={showBrowserFullWidth} />
+                </div>
 
-                <CommonChart
-                  title={`Countries`}
-                  label={`Countries`}
-                  stats={allCountries}
-                  height={commonStatsHeight}
-                  fullWidth={showCountriesFullWidth} />
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 col-span-12 sm:col-span-6">
+                  <CommonChart
+                    title={`Top 12 Countries`}
+                    label={`Countries`}
+                    stats={allCountries}
+                    height={commonStatsHeight}
+                    fullWidth={showCountriesFullWidth} />
+                </div>
 
-                <CommonChart
-                  title={`Pages/Slug ${pages.length > 25 ? "(Top 25)" : ""}`}
-                  label={`Pages/Slug`}
-                  stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
-                  height={pagesHeight}
-                  fullWidth />
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 col-span-12">
+                  <CommonChart
+                    title={`Most Popular Pages ${pages.length > 25 ? "(Top 25)" : ""}`}
+                    label={`Pages/Slug`}
+                    stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
+                    height={pagesHeight}
+                    fullWidth />
+                </div>
               </div>
             </div>
           </section>
@@ -163,8 +205,18 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         <Footer />
 
         <a className='hidden' href="https://visitorbadge.io/status?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus" title="Status of status page" rel="nofollow" >
-          <img src={`https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759&slug=${trackingPath}`} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759&slug=${trackingPath}`} alt="Status page visitor badge" />
         </a>
+
+        {/* Daily Details Modal */}
+        {selectedDailyData && (
+          <DailyDetails
+            date={selectedDailyData.date}
+            data={selectedDailyData.data}
+            onClose={handleCloseDailyDetails}
+          />
+        )}
       </div>
     </>
   );

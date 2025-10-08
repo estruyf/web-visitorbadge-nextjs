@@ -34,20 +34,20 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailySta
   }
 
   return (
-    <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
-      {(total !== undefined && total !== null) && <Statistic title={`Total hits`} total={total} />}
+    <dl className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {(total !== undefined && total !== null) && <Statistic title={`Total Visitors`} total={total} />}
 
-      {(today !== undefined && today !== null) && <Statistic title={`Today`} total={today} />}
+      {(today !== undefined && today !== null) && <Statistic title={`Today's Visitors`} total={today} />}
 
-      {(dailyStats && dailyStats.length > 0) && <Statistic title={`Hits the last ${days} days`} total={dailyStats.map(d => d.total).reduce((a, b) => (a + b))} />}
+      {(dailyStats && dailyStats.length > 0) && <Statistic title={`Last ${days} Days`} total={dailyStats.map(d => d.total).reduce((a, b) => (a + b))} />}
 
-      {(bestDay && bestDay.total) && <Statistic title={`Best day: ${bestDay.title}`} total={bestDay.total} />}
+      {(bestDay && bestDay.total) && <Statistic title={`Peak Day`} subTitle={bestDay.title} total={bestDay.total} />}
 
-      {(bestCountry && bestCountry.title) && <Statistic title={`Country: ${bestCountry.title}`} total={bestCountry.value} />}
+      {(bestCountry && bestCountry.title) && <Statistic title={`Top Country`} subTitle={bestCountry.title} total={bestCountry.value} />}
 
-      {(bestBrowser && bestBrowser.title) && <Statistic title={`Browser: ${bestBrowser.title}`} total={bestBrowser.value} />}
+      {(bestBrowser && bestBrowser.title) && <Statistic title={`Top Browser`} subTitle={bestBrowser.title} total={bestBrowser.value} />}
 
-      {(bestPage && bestPage.url) && <Statistic title={`Most visited page`} subTitle={bestPage.url} total={bestPage.count} />}
+      {(bestPage && bestPage.url) && <Statistic title={`Most Popular Page`} subTitle={bestPage.url} total={bestPage.count} />}
     </dl>
   );
 };
