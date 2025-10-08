@@ -10,6 +10,7 @@ export interface ICommonChartProps {
   }[];
   height: number;
   fullWidth?: boolean;
+  chartId?: string;
 }
 
 export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
@@ -18,6 +19,7 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
   stats,
   height,
   fullWidth,
+  chartId
 }: React.PropsWithChildren<ICommonChartProps>) => {
 
 
@@ -47,6 +49,7 @@ export const CommonChart: React.FunctionComponent<ICommonChartProps> = ({
       </h3>
 
       <div
+        id={chartId}
         style={{
           position: 'relative',
           width: '100%',

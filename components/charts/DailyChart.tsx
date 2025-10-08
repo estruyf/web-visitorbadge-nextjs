@@ -6,12 +6,14 @@ export interface IDailyChartProps {
   stats: DailyResult[];
   onDateSelect?: (date: string, data: DailyResult) => void;
   selectedDate?: string;
+  chartId?: string;
 }
 
 export const DailyChart: React.FunctionComponent<IDailyChartProps> = ({
   stats,
   onDateSelect,
-  selectedDate
+  selectedDate,
+  chartId = 'daily-chart'
 }: React.PropsWithChildren<IDailyChartProps>) => {
   // Sort data from old to new (chronological order)
   const sortedStats = React.useMemo(() => {
@@ -36,79 +38,81 @@ export const DailyChart: React.FunctionComponent<IDailyChartProps> = ({
         )}
       </div>
 
-      <Line
-        height={120}
-        options={{
-          responsive: true,
-          interaction: {
-            mode: 'index',
-            intersect: false,
-          },
-          onClick: (event, elements) => {
-            if (elements.length > 0 && onDateSelect) {
-              const index = elements[0].index;
-              const selectedData = sortedStats[index];
-              onDateSelect(selectedData.title, selectedData);
-            }
-          },
-          plugins: {
-            tooltip: {
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              titleColor: '#374151',
-              bodyColor: '#374151',
-              borderColor: '#CC8312',
-              borderWidth: 1,
-              callbacks: {
-                afterBody: () => {
-                  return onDateSelect ? ['', 'Click to view daily details'] : [];
+      <div id={chartId}>
+        <Line
+          height={120}
+          options={{
+            responsive: true,
+            interaction: {
+              mode: 'index',
+              intersect: false,
+            },
+            onClick: (event, elements) => {
+              if (elements.length > 0 && onDateSelect) {
+                const index = elements[0].index;
+                const selectedData = sortedStats[index];
+                onDateSelect(selectedData.title, selectedData);
+              }
+            },
+            plugins: {
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                titleColor: '#374151',
+                bodyColor: '#374151',
+                borderColor: '#CC8312',
+                borderWidth: 1,
+                callbacks: {
+                  afterBody: () => {
+                    return onDateSelect ? ['', 'Click to view daily details'] : [];
+                  }
+                }
+              },
+            },
+            scales: {
+              x: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Date'
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)',
+                }
+              },
+              y: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Visitors'
+                },
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)',
                 }
               }
-            },
-          },
-          scales: {
-            x: {
-              display: true,
-              title: {
-                display: true,
-                text: 'Date'
-              },
-              grid: {
-                color: 'rgba(0, 0, 0, 0.1)',
-              }
-            },
-            y: {
-              display: true,
-              title: {
-                display: true,
-                text: 'Visitors'
-              },
-              beginAtZero: true,
-              grid: {
-                color: 'rgba(0, 0, 0, 0.1)',
-              }
             }
-          }
-        }}
-        data={{
-          labels: sortedStats.map(r => r.title),
-          datasets: [
-            {
-              label: 'Daily visitors',
-              data: sortedStats.map(r => r.total),
-              fill: true,
-              borderWidth: 2,
-              borderColor: '#CC8312',
-              backgroundColor: "rgba(252, 242, 225, 0.6)",
-              pointRadius: 6,
-              pointHoverRadius: 8,
-              pointBackgroundColor: '#CC8312',
-              pointBorderColor: '#ffffff',
-              pointBorderWidth: 2,
-              tension: 0.1,
-            }
-          ]
-        }}
-      />
+          }}
+          data={{
+            labels: sortedStats.map(r => r.title),
+            datasets: [
+              {
+                label: 'Daily visitors',
+                data: sortedStats.map(r => r.total),
+                fill: true,
+                borderWidth: 2,
+                borderColor: '#CC8312',
+                backgroundColor: "rgba(252, 242, 225, 0.6)",
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointBackgroundColor: '#CC8312',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                tension: 0.1,
+              }
+            ]
+          }}
+        />
+      </div>
     </section>
   );
 };
@@ -182,15 +186,15 @@ export const DailyDetails: React.FunctionComponent<IDailyDetailsProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-blue-50 rounded-lg p-4 text-center">
+            <div className="bg-yellow-500 rounded-lg p-4 text-center">
               <div className="text-3xl font-bold text-blue-600">{data.total}</div>
               <div className="text-sm text-blue-600 font-medium">Total Visitors</div>
             </div>
-            <div className="bg-green-50 rounded-lg p-4 text-center">
+            <div className="bg-yellow-500 rounded-lg p-4 text-center">
               <div className="text-3xl font-bold text-green-600">{topBrowsers.length}</div>
               <div className="text-sm text-green-600 font-medium">Different Browsers</div>
             </div>
-            <div className="bg-purple-50 rounded-lg p-4 text-center">
+            <div className="bg-yellow-500 rounded-lg p-4 text-center">
               <div className="text-3xl font-bold text-purple-600">{topCountries.length}</div>
               <div className="text-sm text-purple-600 font-medium">Different Countries</div>
             </div>
@@ -203,7 +207,7 @@ export const DailyDetails: React.FunctionComponent<IDailyDetailsProps> = ({
                 {topBrowsers.map(({ browser, count }, index) => (
                   <div key={browser} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-semibold text-sm mr-3">
+                      <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-orange-600 font-semibold text-sm mr-3">
                         {index + 1}
                       </div>
                       <span className="text-gray-900">{browser}</span>
@@ -220,7 +224,7 @@ export const DailyDetails: React.FunctionComponent<IDailyDetailsProps> = ({
                 {topCountries.map(({ country, count }, index) => (
                   <div key={country} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm mr-3">
+                      <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm mr-3">
                         {index + 1}
                       </div>
                       <span className="text-gray-900">{country}</span>

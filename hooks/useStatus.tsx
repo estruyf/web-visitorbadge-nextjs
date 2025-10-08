@@ -11,7 +11,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
   const [daily, setDaily] = useState<DailyResult[]>([]);
   const [pages, setPages] = useState<PageResult[]>([]);
   const [isSponsor, setIsSponsor] = useState<boolean | undefined>(undefined);
-  const [days, setDays] = useState<number>(2);
+  const [days, setDays] = useState<number>(30);
 
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function useStatus(url: string = "", user: string = "", repo: str
             setDaily(data.dailyResults || []);
             setPages(data.pageResults || []);
             setIsSponsor(data.isSponsored || false);
-            setDays(data.days || 2);
+            setDays(data.days || 30);
 
           }
         }
