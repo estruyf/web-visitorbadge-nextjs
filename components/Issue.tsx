@@ -1,26 +1,17 @@
 import * as React from 'react';
 
-export interface IIssueProps {
-  disableTop?: boolean;
-}
+export interface IIssueProps { }
 
-export const Issue: React.FunctionComponent<IIssueProps> = ({ disableTop }: React.PropsWithChildren<IIssueProps>) => {
+export const Issue: React.FunctionComponent<IIssueProps> = (props: React.PropsWithChildren<IIssueProps>) => {
   return (
-    <div className={`${!disableTop ? "-mt-32" : ""} bg-white max-w-3xl mx-auto text-center py-12 px-4 sm:px-6 lg:py-16 lg:px-8 z-10 relative rounded-2xl space-y-4`}>
-      <h2 className="text-gray-900 text-lg md:text-3xl xl:text-4xl tracking-tight font-extrabold">
-        Encountered an issue?
-      </h2>
-
-      <p className="text-base text-gray-500">
-        Please let me know via opening a issue on GitHub.
-      </p>
-
+    <p className="text-base text-ink-500">
+      <span className="font-semibold text-ink-900">Encountered an issue?</span> Please let me know by{' '}
       <a
         href="https://github.com/estruyf/web-visitorbadge-nextjs/issues"
-        className="inline-flex items-center gap-x-2 rounded-md bg-blue-300 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
+        className="font-medium text-ink-900 underline underline-offset-2 hover:text-ink-600"
       >
-        Open an issue
-      </a>
-    </div>
+        opening an issue on GitHub
+      </a>.
+    </p>
   );
 };

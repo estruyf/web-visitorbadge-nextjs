@@ -12,35 +12,42 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
   isSponsor
 }: React.PropsWithChildren<IStatusProps>) => {
   return (
-    <div className="bg-white mt-12">
-      <Sponsor isSponsor={isSponsor} />
-
-      <div className="relative py-32 bg-gray-800">
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1597733336794-12d05021d510?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&&sat=-100"
-            alt=""
-          />
-          <div className="absolute inset-0 bg-blue-300 mix-blend-multiply" aria-hidden="true" />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-          <h2 className="text-3xl font-extrabold text-white font-heading">
+    <section className="bg-paper-dark border-t border-line">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <div className="lg:col-span-7 space-y-5">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-ink-900">
             Want to keep track of your visitors?
           </h2>
 
-          <p className="mt-2 max-w-4xl text-xl text-gray-200 break-words leading-relaxed">
-            You can keep track of your total hits and two day (or more if you become a sponsor) visitor overview on our status page:
+          <p className="max-w-2xl text-lg text-ink-500">
+            You can keep track of your total hits and <b className="font-semibold text-ink-900">two day</b> visitor overview on our status page. By supporting the project, you can extend this to <b className="font-semibold text-ink-900">seven days</b>.
           </p>
 
-          <p className="mt-4 max-w-4xl text-xl text-gray-200 break-words leading-relaxed">
-            <code >{process.env.NEXT_PUBLIC_SITE_URL}/status?path={`${username || "<URL>"}`}</code>
-          </p>
+          <div className="bg-white border border-line rounded-xl px-4 py-3 font-mono text-sm break-all">
+            {
+              username ? (
+                <a
+                  href={`${process.env.NEXT_PUBLIC_SITE_URL}/status?path=${encodeURIComponent(username)}`}
+                  className="text-amber-700 underline underline-offset-2 hover:text-ink-900"
+                  title="Open status page in new tab"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {process.env.NEXT_PUBLIC_SITE_URL}/status?path={username}
+                </a>
+              ) : (
+                <code className="text-ink-500">{process.env.NEXT_PUBLIC_SITE_URL}/status?path={`<URL>`}</code>
+              )
+            }
+          </div>
+
+          <Issue />
+        </div>
+
+        <div className="lg:col-span-5">
+          <Sponsor isSponsor={isSponsor} />
         </div>
       </div>
-
-      <Issue />
-    </div>
+    </section>
   );
 };

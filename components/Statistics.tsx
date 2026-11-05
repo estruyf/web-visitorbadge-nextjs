@@ -1,18 +1,39 @@
 import * as React from 'react';
 import { Statistic } from './Statistic';
 import { CommonStatistic, DailyResult, PageResult } from '../models';
+import { formatShare } from './charts/ChartCard';
 
 export interface IStatisticsProps {
   total: number;
   today: number;
   days: number;
+  created: string | null;
   dailyStats: DailyResult[];
   pagesStats: PageResult[];
   bestCountry: CommonStatistic | undefined;
   bestBrowser: CommonStatistic | undefined;
+  countryHits: number;
+  browserHits: number;
+  onTodaySelect?: () => void;
 }
 
-export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, days, total, today, bestCountry, bestBrowser }: React.PropsWithChildren<IStatisticsProps>) => {
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+const getTrackingLabel = (created: string | null, total: number) => {
+  const date = created ? new Date(created) : null;
+  if (!date || isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  const since = date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  const trackedDays = (Date.now() - date.getTime()) / MS_PER_DAY;
+
+  return trackedDays >= 1
+    ? `Tracking since ${since}, ${Math.round(total / trackedDays).toLocaleString()} a day on average`
+    : `Tracking since ${since}`;
+};
+
+export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, days, created, total, today, bestCountry, bestBrowser, countryHits, browserHits, onTodaySelect }: React.PropsWithChildren<IStatisticsProps>) => {
 
   let bestDay: DailyResult | undefined;
   let bestPage: PageResult | undefined;
@@ -33,6 +54,9 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailySta
     }
   }
 
+  const periodHits = dailyStats.reduce((sum, day) => sum + day.total, 0);
+  const pageHits = pagesStats.reduce((sum, page) => sum + page.count, 0);
+
   // Calculate growth trends
   const growthData = React.useMemo(() => {
     if (!dailyStats || dailyStats.length < 2) return {};
@@ -48,55 +72,61 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailySta
 
     const growth = firstHalfAvg > 0 ? ((secondHalfAvg - firstHalfAvg) / firstHalfAvg) * 100 : 0;
 
-    // Calculate yesterday vs today for today's growth
-    const todayIndex = sortedStats.length - 1;
-    const yesterdayIndex = todayIndex - 1;
-    const todayGrowth = yesterdayIndex >= 0 && sortedStats[yesterdayIndex].total > 0
-      ? ((sortedStats[todayIndex].total - sortedStats[yesterdayIndex].total) / sortedStats[yesterdayIndex].total) * 100
-      : 0;
-
     return {
       periodGrowth: growth,
-      todayGrowth: todayGrowth,
       averageDaily: sortedStats.reduce((sum, day) => sum + day.total, 0) / sortedStats.length
     };
   }, [dailyStats]);
 
+  // The API doesn't include today in the daily stats, so the latest day is yesterday
+  const yesterday = React.useMemo(() => {
+    const dates = dailyStats.map(d => d.title).sort();
+    return dailyStats.find(d => d.title === dates[dates.length - 1]);
+  }, [dailyStats]);
+
   return (
-    <dl className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {(total !== undefined && total !== null) &&
         <Statistic
-          title={`Total Visitors`}
+          title={`Total Hits`}
           total={total}
-          growth={growthData.periodGrowth}
-          trend={growthData.periodGrowth ? (growthData.periodGrowth > 2 ? 'up' : growthData.periodGrowth < -2 ? 'down' : 'stable') : undefined}
+          subTitle={getTrackingLabel(created, total)}
+          featured
+          className="sm:col-span-2 lg:row-span-2"
         />
       }
 
       {(today !== undefined && today !== null) &&
         <Statistic
-          title={`Today's Visitors`}
+          title={`Today's Hits`}
           total={today}
-          growth={growthData.todayGrowth}
-          trend={growthData.todayGrowth ? (growthData.todayGrowth > 5 ? 'up' : growthData.todayGrowth < -5 ? 'down' : 'stable') : undefined}
+          subTitle={yesterday ? `Yesterday: ${yesterday.total.toLocaleString()}` : undefined}
+          action={onTodaySelect && (
+            <button type="button" className="text-sm font-medium text-amber-700 underline underline-offset-2 hover:text-ink-900" onClick={onTodaySelect}>
+              View today&apos;s breakdown
+            </button>
+          )}
         />
       }
 
       {(dailyStats && dailyStats.length > 0) &&
         <Statistic
           title={`Last ${days} Days`}
-          total={dailyStats.map(d => d.total).reduce((a, b) => (a + b))}
-          subTitle={`Avg: ${Math.round(growthData.averageDaily || 0)} visits/day`}
+          total={periodHits}
+          growth={growthData.periodGrowth}
+          growthLabel="vs earlier days"
+          trend={growthData.periodGrowth ? (growthData.periodGrowth > 2 ? 'up' : growthData.periodGrowth < -2 ? 'down' : 'stable') : undefined}
+          subTitle={`Avg: ${Math.round(growthData.averageDaily || 0)} hits/day`}
         />
       }
 
-      {(bestDay && bestDay.total) && <Statistic title={`Peak Day`} subTitle={bestDay.title} total={bestDay.total} />}
+      {(bestDay && bestDay.total) && <Statistic title={`Peak Day`} subTitle={`${bestDay.title}, ${formatShare(bestDay.total, periodHits)} of this period`} total={bestDay.total} />}
 
-      {(bestCountry && bestCountry.title) && <Statistic title={`Top Country`} subTitle={bestCountry.title} total={bestCountry.value} />}
+      {(bestCountry && bestCountry.title) && <Statistic title={`Top Country`} subTitle={`${bestCountry.title}, ${formatShare(bestCountry.value, countryHits)} of hits`} total={bestCountry.value} />}
 
-      {(bestBrowser && bestBrowser.title) && <Statistic title={`Top Browser`} subTitle={bestBrowser.title} total={bestBrowser.value} />}
+      {(bestBrowser && bestBrowser.title) && <Statistic title={`Top Browser`} subTitle={`${bestBrowser.title}, ${formatShare(bestBrowser.value, browserHits)} of known browsers`} total={bestBrowser.value} />}
 
-      {(bestPage && bestPage.url) && <Statistic title={`Most Popular Page`} subTitle={bestPage.url} total={bestPage.count} />}
+      {(bestPage && bestPage.url) && <Statistic title={`Most Popular Page`} subTitle={`${bestPage.url}, ${formatShare(bestPage.count, pageHits)} of page hits`} total={bestPage.count} className="lg:col-span-3" />}
     </dl>
   );
 };

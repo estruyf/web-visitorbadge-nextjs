@@ -72,52 +72,27 @@ const navigation = {
 
 export const Footer: React.FunctionComponent<IFooterProps> = (props: React.PropsWithChildren<IFooterProps>) => {
   return (
-    <footer className="bg-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
-        <nav className="-mx-5 -my-2 flex flex-wrap justify-center" aria-label="Footer">
-          {navigation.main.map((item) => (
-            <div key={item.name} className="px-5 py-2">
-              <a href={item.href} className="text-base text-gray-500 hover:text-gray-900">
+    <footer className="bg-white border-t border-line">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="space-y-6">
+          <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
+            {navigation.main.map((item) => (
+              <a key={item.name} href={item.href} className="text-base font-medium text-ink-700 hover:text-amber-700 transition-colors">
                 {item.name}
               </a>
-            </div>
-          ))}
-        </nav>
-        <div className="mt-8 flex justify-center space-x-6">
-          {navigation.social.map((item) => (
-            <a key={item.name} href={item.href} className="text-gray-400 hover:text-blue-200">
-              <span className="sr-only">{item.name}</span>
-              <item.icon className="h-6 w-6" aria-hidden="true" />
-            </a>
-          ))}
-        </div>
+            ))}
+          </nav>
 
-        <div className="mt-8 flex flex-col items-center space-y-4">
-          <h3 className="text-xl font-bold text-gray-500">
-            Premium Sponsors
-          </h3>
-          <div className="flex items-center space-x-2">
-            <a
-              href="https://www.coderabbit.ai/?utm_source=visitorbadge&utm_campaign=oss"
-              title="Supported by CodeRabbit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center"
-            >
-              <Image
-                src="coderabbit-orange.svg"
-                alt="CodeRabbit Logo"
-                width={250}
-                height={40}
-              />
-            </a>
+          <div className="flex gap-x-5">
+            {navigation.social.map((item) => (
+              <a key={item.name} href={item.href} title={item.name} className="text-ink-400 hover:text-amber-700 transition-colors">
+                <span className="sr-only">{item.name}</span>
+                <item.icon className="h-6 w-6" aria-hidden="true" />
+              </a>
+            ))}
           </div>
-        </div>
 
-        <hr className="my-8 border-gray-200" />
-
-        <div className="mt-8 flex justify-center">
-          <a href="https://struyfconsulting.com" title="Hire Elio Struyf via Struyf Consulting">
+          <a className="inline-block" href="https://struyfconsulting.com" title="Hire Elio Struyf via Struyf Consulting">
             <Image
               src={`/struyf-consulting.webp`}
               alt='Struyf Consulting Logo'
@@ -127,8 +102,30 @@ export const Footer: React.FunctionComponent<IFooterProps> = (props: React.Props
           </a>
         </div>
 
-        <p className="mt-8 text-center text-base text-gray-400">
-          &copy; {new Date().getFullYear()} - Created by <a className="text-blue-200" href="https://www.eliostruyf.com" title="Elio Struyf">Elio Struyf</a>. All rights reserved.
+        <div className="space-y-3 lg:justify-self-end">
+          <h3 className="text-sm font-semibold text-ink-500">
+            Premium Sponsors
+          </h3>
+          <a
+            href="https://www.coderabbit.ai/?utm_source=visitorbadge&utm_campaign=oss"
+            title="Supported by CodeRabbit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            <Image
+              src="/coderabbit-orange.svg"
+              alt="CodeRabbit Logo"
+              width={250}
+              height={40}
+            />
+          </a>
+        </div>
+      </div>
+
+      <div className="border-t border-line">
+        <p className="max-w-7xl mx-auto px-4 sm:px-6 py-6 text-sm text-ink-500">
+          &copy; {new Date().getFullYear()} - Created by <a className="font-medium text-ink-900 hover:text-amber-700 transition-colors" href="https://www.eliostruyf.com" title="Elio Struyf">Elio Struyf</a>. All rights reserved.
         </p>
       </div>
     </footer>
