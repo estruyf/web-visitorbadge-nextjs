@@ -7,7 +7,6 @@ export interface IStatisticsProps {
   total: number;
   today: number;
   days: number;
-  created: string | null;
   dailyStats: DailyResult[];
   pagesStats: PageResult[];
   bestCountry: CommonStatistic | undefined;
@@ -17,23 +16,7 @@ export interface IStatisticsProps {
   onTodaySelect?: () => void;
 }
 
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
-const getTrackingLabel = (created: string | null, total: number) => {
-  const date = created ? new Date(created) : null;
-  if (!date || isNaN(date.getTime())) {
-    return undefined;
-  }
-
-  const since = date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-  const trackedDays = (Date.now() - date.getTime()) / MS_PER_DAY;
-
-  return trackedDays >= 1
-    ? `Tracking since ${since}, ${Math.round(total / trackedDays).toLocaleString()} a day on average`
-    : `Tracking since ${since}`;
-};
-
-export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, days, created, total, today, bestCountry, bestBrowser, countryHits, browserHits, onTodaySelect }: React.PropsWithChildren<IStatisticsProps>) => {
+export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailyStats, pagesStats, days, total, today, bestCountry, bestBrowser, countryHits, browserHits, onTodaySelect }: React.PropsWithChildren<IStatisticsProps>) => {
 
   let bestDay: DailyResult | undefined;
   let bestPage: PageResult | undefined;
@@ -90,7 +73,6 @@ export const Statistics: React.FunctionComponent<IStatisticsProps> = ({ dailySta
         <Statistic
           title={`Total Hits`}
           total={total}
-          subTitle={getTrackingLabel(created, total)}
           featured
           className="sm:col-span-2 lg:row-span-2"
         />

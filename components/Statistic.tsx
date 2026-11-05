@@ -61,7 +61,6 @@ export const Statistic: React.FunctionComponent<IStatisticProps> = ({ title, sub
         <dd>
           <Counter value={total} className="text-2xl sm:text-4xl lg:text-5xl" />
           {growthElm && <div className="mt-3">{growthElm}</div>}
-          {subTitle && <p className="mt-3 text-sm text-ink-200">{subTitle}</p>}
         </dd>
       </div>
     );

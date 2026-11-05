@@ -121,7 +121,7 @@ export interface IStatusPageProps {
 }
 
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
-  const { loading, error, total, today, todayStats, created, daily, pages, isSponsor, days } = useStatus(url, user, repo);
+  const { loading, error, total, today, todayStats, daily, pages, isSponsor, days } = useStatus(url, user, repo);
   const { mostUsedBrowser, mostVisitedCountry, allBrowsers, allCountries, browserHits, countryHits, trafficSplit, githubHits, sources, trendingPages, trendingWindow } = useStatistics(daily, pages);
 
   // State for daily details modal
@@ -252,7 +252,6 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
               <Statistics
                 total={total}
                 today={today}
-                created={created}
                 dailyStats={daily}
                 pagesStats={pages}
                 bestBrowser={mostUsedBrowser}
