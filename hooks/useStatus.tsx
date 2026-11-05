@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { API } from '../constants/API';
 import { DEFAULTS } from '../constants/Defaults';
-import { DailyResult, PageResult, StatusResult } from '../models';
+import { DailyResult, PageResult, StatusResult, TodayStats } from '../models';
 
 export default function useStatus(url: string = "", user: string = "", repo: string = "") {
 
@@ -12,11 +12,14 @@ export default function useStatus(url: string = "", user: string = "", repo: str
   const [pages, setPages] = useState<PageResult[]>([]);
   const [isSponsor, setIsSponsor] = useState<boolean | undefined>(undefined);
   const [days, setDays] = useState<number>(30);
-
+  const [created, setCreated] = useState<string | null>(null);
+  const [todayStats, setTodayStats] = useState<TodayStats | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const getStatus = async (fallbackUrl?: string) => {
       setLoading(true);
+      setError(false);
 
       let query = `?path=${fallbackUrl}`;
 
@@ -44,11 +47,15 @@ export default function useStatus(url: string = "", user: string = "", repo: str
             setPages(data.pageResults || []);
             setIsSponsor(data.isSponsored || false);
             setDays(data.days || 30);
-
+            setCreated(data.created || null);
+            setTodayStats(data.todayStats || null);
           }
+        } else {
+          setError(true);
         }
       } catch (error) {
         console.error('API request failed:', error);
+        setError(true);
       }
 
       setLoading(false);
@@ -68,6 +75,9 @@ export default function useStatus(url: string = "", user: string = "", repo: str
     pages,
     isSponsor,
     days,
+    created,
+    todayStats,
+    error,
     loading
   };
 }

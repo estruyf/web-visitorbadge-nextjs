@@ -22,7 +22,7 @@ export const Favicons: React.FunctionComponent<IFaviconsProps> = (props: React.P
       <link rel="manifest" href="/manifest.json" />
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
-      <meta name="theme-color" content="#ffffff" />
+      <meta name="theme-color" content="#132136" />
     </Head>
   );
 };

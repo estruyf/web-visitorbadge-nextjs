@@ -5,15 +5,17 @@ import { Footer } from './Footer';
 import { Header } from './Header';
 import { Status } from './Status';
 import Head from 'next/head';
-import { Loading } from './Loading';
+import { API } from '../constants/API';
 import { DEFAULTS } from '../constants/Defaults';
 import { Statistics } from './Statistics';
 import { DailyChart, DailyDetails } from './charts/DailyChart';
 import { CommonChart } from './charts/CommonChart';
+import { TrafficSplitChart } from './charts/TrafficSplitChart';
+import { ExportCsvButton } from './ExportCsvButton';
+import { TrendingPages } from './TrendingPages';
+import { formatShare } from './charts/ChartCard';
 import { SponsorButton } from './SponsorButton';
 import useStatistics from '../hooks/useStatistics';
-
-
 
 // Export Button Component
 const ExportButton: React.FC<{ chartId: string; filename: string }> = ({ chartId, filename }) => {
@@ -31,10 +33,10 @@ const ExportButton: React.FC<{ chartId: string; filename: string }> = ({ chartId
   return (
     <button
       onClick={handleExport}
-      className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors duration-200"
+      className="inline-flex flex-shrink-0 items-center px-2.5 py-1.5 text-sm font-medium text-ink-700 bg-white border border-line rounded-lg hover:border-ink-300 hover:text-ink-900 transition-colors"
       title="Export chart as PNG"
     >
-      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
       Export
@@ -43,7 +45,7 @@ const ExportButton: React.FC<{ chartId: string; filename: string }> = ({ chartId
 };
 
 // Data Freshness Indicator Component
-const DataFreshnessIndicator: React.FC<{ loading: boolean }> = ({ loading }) => {
+const DataFreshnessIndicator: React.FC<{ loading: boolean; error: boolean }> = ({ loading, error }) => {
   const [lastUpdated, setLastUpdated] = React.useState<Date>(new Date());
 
   React.useEffect(() => {
@@ -56,7 +58,7 @@ const DataFreshnessIndicator: React.FC<{ loading: boolean }> = ({ loading }) => 
     const now = new Date();
     const diff = Math.floor((now.getTime() - lastUpdated.getTime()) / 1000);
 
-    if (diff < 60) return 'Just now';
+    if (diff < 60) return 'just now';
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
@@ -73,38 +75,44 @@ const DataFreshnessIndicator: React.FC<{ loading: boolean }> = ({ loading }) => 
   }, [getTimeAgo]);
 
   return (
-    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-      <div className={`w-2 h-2 rounded-full mr-2 ${loading ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'}`}></div>
-      {loading ? 'Updating...' : `Updated ${timeAgo}`}
+    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-ink-800 text-ink-100">
+      <div className={`w-2 h-2 rounded-full mr-2 ${loading ? 'bg-amber-400 animate-pulse' : 'bg-amber-300'}`}></div>
+      {loading ? 'Updating...' : error ? 'Not updated' : `Updated ${timeAgo}`}
     </div>
   );
 };
 
 // Skeleton Components for Loading States
-const StatisticSkeleton: React.FC = () => (
-  <div className="relative px-6 py-8 bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
-    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600"></div>
+const StatisticSkeleton: React.FC<{ className?: string }> = ({ className }) => (
+  <div className={`px-5 py-5 bg-white rounded-2xl border border-line ${className || ''}`}>
     <div className="animate-pulse">
-      <div className="h-4 bg-gray-200 rounded w-24 mb-3"></div>
-      <div className="h-10 bg-gray-200 rounded w-16 mb-2"></div>
-      <div className="h-4 bg-gray-200 rounded w-32"></div>
+      <div className="h-4 bg-paper-dark rounded w-24 mb-3"></div>
+      <div className="h-8 bg-paper-dark rounded w-20 mb-2"></div>
+      <div className="h-4 bg-paper-dark rounded w-32"></div>
     </div>
   </div>
 );
 
-const ChartSkeleton: React.FC<{ height?: number }> = ({ height = 300 }) => (
-  <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+const ChartSkeleton: React.FC<{ height?: number; className?: string }> = ({ height = 300, className }) => (
+  <div className={`bg-white rounded-2xl border border-line p-5 sm:p-6 ${className || ''}`}>
     <div className="animate-pulse">
-      <div className="flex justify-between items-center mb-4">
-        <div className="h-6 bg-gray-200 rounded w-32"></div>
-        <div className="h-8 bg-gray-200 rounded w-20"></div>
+      <div className="flex justify-between items-center mb-5">
+        <div className="h-6 bg-paper-dark rounded w-32"></div>
+        <div className="h-8 bg-paper-dark rounded w-20"></div>
       </div>
-      <div className={`bg-gray-200 rounded`} style={{ height: `${height}px` }}></div>
+      <div className="bg-paper-dark rounded-xl" style={{ height: `${height}px` }}></div>
     </div>
   </div>
 );
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Title, Legend);
+ChartJS.defaults.font.family = "'Instrument Sans', system-ui, sans-serif";
+ChartJS.defaults.font.size = 12;
+ChartJS.defaults.color = '#56657C';
+
+// Row height of the horizontal bar charts
+const BAR_ROW_HEIGHT = 30;
+const MIN_BAR_CHART_HEIGHT = 240;
 
 export interface IStatusPageProps {
   url?: string;
@@ -113,8 +121,8 @@ export interface IStatusPageProps {
 }
 
 export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, user, repo }: React.PropsWithChildren<IStatusPageProps>) => {
-  const { loading, total, today, daily, pages, isSponsor, days } = useStatus(url, user, repo);
-  const { mostUsedBrowser, mostVisitedCountry, allBrowsers, allCountries } = useStatistics(daily);
+  const { loading, error, total, today, todayStats, created, daily, pages, isSponsor, days } = useStatus(url, user, repo);
+  const { mostUsedBrowser, mostVisitedCountry, allBrowsers, allCountries, browserHits, countryHits, trafficSplit, githubHits, sources, trendingPages, trendingWindow } = useStatistics(daily, pages);
 
   // State for daily details modal
   const [selectedDailyData, setSelectedDailyData] = React.useState<{ date: string; data: any } | null>(null);
@@ -133,24 +141,24 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
     }
   }, [url, user, repo]);
 
-  const showBrowserFullWidth = React.useMemo(() => {
-    return !allCountries || allCountries.length === 0;
-  }, [allCountries]);
-
-  const showCountriesFullWidth = React.useMemo(() => {
-    return !allBrowsers || allBrowsers.length === 0;
-  }, [allBrowsers]);
-
   const commonStatsHeight = React.useMemo(() => {
-    return Math.max(allBrowsers.length, allCountries.length) * 10;
+    return Math.max(MIN_BAR_CHART_HEIGHT, Math.max(allBrowsers.length, allCountries.length) * BAR_ROW_HEIGHT);
   }, [allBrowsers, allCountries]);
 
   const pagesHeight = React.useMemo(() => {
-    // More generous height calculation for better readability
-    const baseHeight = 500;
-    const perItemHeight = 25;
-    return Math.max(baseHeight, sortedPages.length * perItemHeight);
+    return Math.max(MIN_BAR_CHART_HEIGHT, sortedPages.length * BAR_ROW_HEIGHT);
   }, [sortedPages]);
+
+  const periodHits = React.useMemo(() => daily.reduce((sum, day) => sum + day.total, 0), [daily]);
+
+  const handleTodaySelect = React.useCallback(() => {
+    if (todayStats) {
+      setSelectedDailyData({
+        date: 'Today so far',
+        data: { title: 'Today', total: today, browsers: todayStats.browsers, countries: todayStats.countries }
+      });
+    }
+  }, [today, todayStats]);
 
   // Handler for date selection in daily chart
   const handleDateSelect = React.useCallback((date: string, data: any) => {
@@ -161,8 +169,6 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
   const handleCloseDailyDetails = React.useCallback(() => {
     setSelectedDailyData(null);
   }, []);
-
-
 
   return (
     <>
@@ -186,155 +192,160 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
         <meta name="robots" content="noindex" />
       </Head>
 
+      <div className="flex flex-col min-h-screen">
+        <div className="bg-ink-900 text-white">
+          <Header labelColor={`#555555`} countColor={`#263759`} badgeStyle={`default`} />
 
-
-      <div className={`bg-white flex flex-col h-screen`}>
-        <Header labelColor={`#555555`} countColor={`#263759`} badgeStyle={`default`} />
-
-        <div className="relative">
-          <div className="absolute inset-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="w-full h-full object-cover"
-              src="https://images.unsplash.com/photo-1597733336794-12d05021d510?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1920&q=60&&sat=-100"
-              alt="" />
-            <div className="absolute inset-0 bg-blue-400 mix-blend-multiply" aria-hidden="true" />
-          </div>
-
-          <div className="relative max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8 space-y-4">
-            <h1 className="text-5xl font-extrabold text-white font-heading">
-              Visitor Badge - Statistics
-            </h1>
-            <p className="text-xl leading-6 text-gray-200">
-              Overview for {trackingPath}
-            </p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-10 lg:pb-12 flex flex-wrap items-end justify-between gap-6">
+            <div className="min-w-0">
+              <DataFreshnessIndicator loading={loading} error={error} />
+              <p className="mt-5 text-lg text-ink-200">Visitor Badge statistics for</p>
+              <h1 className="mt-1 font-heading font-extrabold text-3xl sm:text-5xl break-words" style={{ overflowWrap: 'anywhere', lineHeight: 1.1 }}>
+                {trackingPath}
+              </h1>
+            </div>
 
             {
               typeof isSponsor !== "undefined" && !isSponsor && (
-                <SponsorButton isDark />
+                <SponsorButton />
               )
             }
           </div>
+
+          <div className="ruler" aria-hidden="true" />
         </div>
 
-        <div className={`flex-grow`}>
-          <section className={`bg-gradient-to-r from-gray-100 to-yellow-200 mb-12 border-t border-b border-gray-200 shadow-sm`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-              <div className="text-center mb-8">
-                <div className="flex justify-center mb-4">
-                  <DataFreshnessIndicator loading={loading} />
-                </div>
-                <h2 className="font-heading text-4xl leading-8 font-bold text-gray-900 mb-4">
-                  Analytics Overview
-                </h2>
-                <p className="text-lg text-gray-600 mb-6">
-                  Comprehensive statistics for the last {days} days
-                </p>
-              </div>
+        <main className="flex-grow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 lg:py-14 space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-ink-900">
+                {loading ? 'Loading your statistics' : error ? 'Statistics unavailable' : `The last ${days} days`}
+              </h2>
 
-              {loading ? (
-                <dl className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {[...Array(7)].map((_, i) => (
-                    <StatisticSkeleton key={i} />
-                  ))}
-                </dl>
-              ) : (
-                <Statistics
-                  total={total}
-                  today={today}
-                  dailyStats={daily}
-                  pagesStats={pages}
-                  bestBrowser={mostUsedBrowser}
-                  bestCountry={mostVisitedCountry}
-                  days={days} />
-              )}
+              {!loading && !error && daily.length > 0 && <ExportCsvButton daily={daily} pages={pages} />}
             </div>
-          </section>
 
-          <section className="bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 space-y-8 py-16">
-              <div className="text-center">
-                <h2 className="font-heading text-4xl leading-8 font-bold text-gray-900 mb-4">
-                  Interactive Charts
-                </h2>
-                <p className="text-lg text-gray-600">
-                  Detailed analytics and trends for the last {days} days
+            {!loading && error && (
+              <div className="bg-white border border-line rounded-2xl p-6 sm:p-8 space-y-4" role="alert">
+                <p className="text-base text-ink-500">
+                  We couldn&apos;t load the statistics for this badge. Please try again in a moment.
                 </p>
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded-lg bg-amber-400 px-3.5 py-2.5 text-sm font-semibold text-ink-950 hover:bg-amber-300 transition-colors"
+                  onClick={() => window.location.reload()}
+                >
+                  Try again
+                </button>
               </div>
+            )}
 
-              {loading ? (
+            {loading ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <StatisticSkeleton className="sm:col-span-2 lg:row-span-2" />
+                {[...Array(5)].map((_, i) => (
+                  <StatisticSkeleton key={i} />
+                ))}
+                <StatisticSkeleton className="lg:col-span-3" />
+              </div>
+            ) : !error && (
+              <Statistics
+                total={total}
+                today={today}
+                created={created}
+                dailyStats={daily}
+                pagesStats={pages}
+                bestBrowser={mostUsedBrowser}
+                bestCountry={mostVisitedCountry}
+                browserHits={browserHits}
+                countryHits={countryHits}
+                onTodaySelect={todayStats ? handleTodaySelect : undefined}
+                days={days} />
+            )}
+
+            {loading ? (
+              <>
                 <ChartSkeleton height={320} />
-              ) : (
-                <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-                  <div className="flex items-center justify-end mb-4">
-                    <ExportButton chartId="daily-visitors-chart" filename="daily-visitors" />
-                  </div>
-                  <DailyChart
-                    stats={daily}
-                    onDateSelect={handleDateSelect}
-                    selectedDate={selectedDailyData?.date}
-                    chartId="daily-visitors-chart"
-                  />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <ChartSkeleton height={360} />
+                  <ChartSkeleton height={360} />
                 </div>
-              )}
+              </>
+            ) : !error && (
+              <>
+                <DailyChart
+                  stats={daily}
+                  onDateSelect={handleDateSelect}
+                  selectedDate={selectedDailyData?.date}
+                  chartId="daily-hits-chart"
+                  actions={<ExportButton chartId="daily-hits-chart" filename="daily-hits" />}
+                />
 
-              {loading ? (
-                <div className={`grid grid-cols-12 gap-8`}>
-                  <div className="col-span-12 sm:col-span-6">
-                    <ChartSkeleton height={400} />
-                  </div>
-                  <div className="col-span-12 sm:col-span-6">
-                    <ChartSkeleton height={400} />
-                  </div>
-                  <div className="col-span-12">
-                    <ChartSkeleton height={600} />
-                  </div>
+                {
+                  githubHits > 0 && (
+                    <TrafficSplitChart
+                      days={trafficSplit}
+                      chartId="traffic-split-chart"
+                      actions={<ExportButton chartId="traffic-split-chart" filename="traffic-split" />}
+                    />
+                  )
+                }
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <CommonChart
+                    title={`Top 10 Browsers`}
+                    hint={githubHits > 0 ? `Without GitHub's image proxy, which hides the reader's browser.` : undefined}
+                    label={`Browsers`}
+                    stats={allBrowsers}
+                    height={commonStatsHeight}
+                    chartId="browsers-chart"
+                    actions={<ExportButton chartId="browsers-chart" filename="top-browsers" />} />
+
+                  <CommonChart
+                    title={`Top 12 Countries`}
+                    hint={githubHits > 0 ? `${formatShare(githubHits, periodHits)} of hits came through GitHub's image proxy, so some locations may be the proxy's.` : undefined}
+                    label={`Countries`}
+                    stats={allCountries}
+                    height={commonStatsHeight}
+                    chartId="countries-chart"
+                    actions={<ExportButton chartId="countries-chart" filename="top-countries" />} />
+
+                  {
+                    sources.length > 0 && (
+                      <CommonChart
+                        title={`Top Sources`}
+                        hint={`The sites that loaded your badge. GitHub doesn't pass this on.`}
+                        label={`Sources`}
+                        stats={sources}
+                        height={Math.max(MIN_BAR_CHART_HEIGHT, sources.length * BAR_ROW_HEIGHT)}
+                        chartId="sources-chart"
+                        className={trendingPages.length > 0 ? '' : 'lg:col-span-2'}
+                        actions={<ExportButton chartId="sources-chart" filename="top-sources" />} />
+                    )
+                  }
+
+                  {
+                    trendingPages.length > 0 && (
+                      <TrendingPages
+                        pages={trendingPages}
+                        window={trendingWindow}
+                        className={sources.length > 0 ? '' : 'lg:col-span-2'} />
+                    )
+                  }
+
+                  <CommonChart
+                    title={`Most Popular Pages ${pages.length > 25 ? "(Top 25)" : ""}`}
+                    label={`Pages/Slug`}
+                    stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
+                    height={pagesHeight}
+                    chartId="pages-chart"
+                    className="lg:col-span-2"
+                    actions={<ExportButton chartId="pages-chart" filename="popular-pages" />} />
                 </div>
-              ) : (
-                <div className={`grid grid-cols-12 gap-8`}>
-                  <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 col-span-12 sm:col-span-6">
-                    <div className="flex items-center justify-end mb-4">
-                      <ExportButton chartId="browsers-chart" filename="top-browsers" />
-                    </div>
-                    <CommonChart
-                      title={`Top 10 Browsers`}
-                      label={`Browsers`}
-                      stats={allBrowsers}
-                      height={commonStatsHeight}
-                      fullWidth={showBrowserFullWidth}
-                      chartId="browsers-chart" />
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 col-span-12 sm:col-span-6">
-                    <div className="flex items-center justify-end mb-4">
-                      <ExportButton chartId="countries-chart" filename="top-countries" />
-                    </div>
-                    <CommonChart
-                      title={`Top 12 Countries`}
-                      label={`Countries`}
-                      stats={allCountries}
-                      height={commonStatsHeight}
-                      fullWidth={showCountriesFullWidth}
-                      chartId="countries-chart" />
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 col-span-12">
-                    <div className="flex items-center justify-end mb-4">
-                      <ExportButton chartId="pages-chart" filename="popular-pages" />
-                    </div>
-                    <CommonChart
-                      title={`Most Popular Pages ${pages.length > 25 ? "(Top 25)" : ""}`}
-                      label={`Pages/Slug`}
-                      stats={(sortedPages || []).map(page => ({ title: page.url, value: page.count }))}
-                      height={pagesHeight}
-                      fullWidth
-                      chartId="pages-chart" />
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
+              </>
+            )}
+          </div>
+        </main>
 
         <Status
           username={trackingPath}
@@ -344,7 +355,7 @@ export const StatusPage: React.FunctionComponent<IStatusPageProps> = ({ url, use
 
         <a className='hidden' href="https://visitorbadge.io/status?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus" title="Status of status page" rel="nofollow" >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759&slug=${trackingPath}`} alt="Status page visitor badge" />
+          <img src={`${process.env.NEXT_PUBLIC_VISITOR_API}${API.visitors}?path=https%3A%2F%2Fwww.visitorbadge.io%2Fstatus&countColor=%23263759&slug=${trackingPath}`} alt="Status page visitor badge" />
         </a>
 
         {/* Daily Details Modal */}

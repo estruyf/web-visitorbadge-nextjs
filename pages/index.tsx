@@ -1,16 +1,17 @@
 import Head from 'next/head'
 import React, { SyntheticEvent, useState } from 'react';
-import 'tailwindcss/tailwind.css';
 import { Page } from '../components/Page';
 import { ColorPicker } from '../components/ColorPicker';
 import { API } from '../constants/API';
-import { Dropdown } from '../components/Dropdown';
+import { SegmentedControl } from '../components/SegmentedControl';
 import { Favicons } from '../components/Favicons';
-import { CopyField } from '../components/CopyField';
-import Link from 'next/link';
+import { Snippets } from '../components/Snippets';
+import { BadgeSample } from '../components/BadgeSample';
 import { useDebounce } from '../hooks/useDebounce';
 
 const defaultLabelColor = "#555555";
+
+const inputStyle = "mt-2 block w-full bg-white border border-line rounded-lg py-2.5 px-3 text-base text-ink-900 placeholder-ink-500 hover:border-ink-300 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500";
 
 const styles = [
   "default",
@@ -151,34 +152,33 @@ export default function Home() {
       countColor={countColor}
       badgeStyle={badgeStyle}
       username={debounceUsername}>
-      <div>
-        <div className="pb-4 border-b border-gray-200">
-          <h3 className="text-xl leading-6 font-medium text-gray-900">Create your visitor counter/badge</h3>
-          <p className="mt-2 max-w-4xl text-base text-gray-500">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <section className="lg:col-span-5">
+          <h2 className="font-heading text-2xl sm:text-3xl font-bold text-ink-900">Create your visitor counter/badge</h2>
+          <p className="mt-2 text-base text-ink-500">
             Fill in the following form to get your visitor badge Markdown and image URL.
           </p>
-        </div>
 
-        <div className={`my-4 mb-12`}>
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12">
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+          <div className="mt-6 space-y-6">
+            <div>
+              <label htmlFor="username" className="block text-sm font-semibold text-ink-900">
                 URL or Username/Repository
               </label>
               <input
                 type="text"
                 name="username"
                 id="username"
-                autoComplete="username"
+                autoComplete="off"
                 value={username}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Example: https://github.com/estruyf/github-visitors-badge or estruyf/github-visitors-badge"
+                className={inputStyle}
+                placeholder="estruyf/github-visitors-badge"
                 onChange={usernameChange}
               />
+              <p className="mt-1.5 text-sm text-ink-500">A full URL works too, for example https://www.eliostruyf.com</p>
             </div>
 
-            <div className="col-span-12">
-              <label htmlFor="label" className="block text-sm font-medium text-gray-700">
+            <div>
+              <label htmlFor="label" className="block text-sm font-semibold text-ink-900">
                 Label
               </label>
               <input
@@ -186,92 +186,65 @@ export default function Home() {
                 name="label"
                 id="label"
                 value={label}
-                autoComplete="label"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                autoComplete="off"
+                className={inputStyle}
                 placeholder="Default: VISITORS"
                 onChange={labelChange}
               />
             </div>
 
-            <ColorPicker color={labelColor} title={`Label background`} updateColor={(color) => setLabelColor(color)} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <ColorPicker color={labelColor} title={`Label background`} updateColor={(color) => setLabelColor(color)} />
 
-            <ColorPicker color={countColor} title={`Count background`} updateColor={(color) => setCountColor(color)} />
+              <ColorPicker color={countColor} title={`Count background`} updateColor={(color) => setCountColor(color)} />
+            </div>
 
-            <Dropdown items={styles} selected={badgeStyle} title={`Badge style`} triggerUpdate={(style) => setBadgeStyle(style)} />
+            <SegmentedControl items={styles} selected={badgeStyle} title={`Badge style`} triggerUpdate={(style) => setBadgeStyle(style)} />
 
-            <Dropdown items={types} selected={badgeType} title={`Badge type`} triggerUpdate={(type) => setBadgeType(type)} />
+            <SegmentedControl items={types} selected={badgeType} title={`Badge type`} triggerUpdate={(type) => setBadgeType(type)} />
 
-            <Dropdown items={labelStyles} selected={labelStyle} title={`Label style`} triggerUpdate={(style) => setLabelStyle(style)} />
+            <SegmentedControl items={labelStyles} selected={labelStyle} title={`Label style`} triggerUpdate={(style) => setLabelStyle(style)} />
           </div>
-        </div>
-      </div>
+        </section>
 
-      <div className={`mt-16`}>
-        <div className="pb-4 border-b border-gray-200">
-          <h3 className="text-xl leading-6 font-medium text-gray-900">The code for you to use</h3>
-          <p className="mt-2 max-w-4xl text-base text-gray-500">
-            You can use the generated Markdown code or image URL in any of your projects.
-          </p>
-        </div>
-
-        <div className="my-4 grid grid-cols-6 gap-6">
-
-          <CopyField title={`Markdown`} value={getMarkdownCode()} />
-
-          <CopyField title={`Markdown with status link`} value={getMarkdownCodeWithStatus()} />
-
-          <CopyField title={`HTML`} value={getHtmlLink()} />
-
-          <CopyField title={`Image URL`} value={getLink()} />
-
-          {
-            getLink() && (
-              <div className="col-span-6">
-                <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                  Result
-                </label>
-
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={getLink()} alt="Visitor badge" />
-              </div>
-            )
-          }
-        </div>
-      </div>
-
-      <div className={`mt-16`}>
-        <div className="mt-8 pb-4 border-b border-gray-200">
-          <h3 className="text-xl leading-6 font-medium text-gray-900">Follow up on your visitor hits</h3>
-          <p className="mt-2 max-w-4xl text-base text-gray-500">
-            You can keep track of your total hits and <b>two day</b> visitor overview on our status page. By supporting the project, you can extend this to <b>seven days</b>.
-          </p>
-        </div>
-
-        <div className="my-4">
-          <div className="text-sm">
-            <div>
-              <label htmlFor="status" className="block font-medium text-gray-700">
-                Status page
-              </label>
-
+        <section className="lg:col-span-7 lg:sticky lg:top-6 space-y-6">
+          <div>
+            <div className="stage flex items-center justify-center min-h-[11rem] p-6 border border-line rounded-2xl">
               {
-                getStatusLink() ? (
-                  <Link
-                    href={getStatusLink()}
-                    id="status"
-                    className="block mt-1 text-yellow-700 hover:text-yellow-500 underline underline-offset-2"
-                    title='Open status page in new tab'
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    {process.env.NEXT_PUBLIC_SITE_URL}/status?path={`${username || "<URL or Username/Repository>"}`}
-                  </Link>
+                getLink() ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={getLink()} className="max-w-full" alt="Visitor badge" />
                 ) : (
-                  <p className="mt-1 block w-full sm:text-sm text-blue-500">No link, please fill in a URL.</p>
+                  <BadgeSample
+                    label={label}
+                    labelColor={labelColor}
+                    countColor={countColor}
+                    badgeStyle={badgeStyle}
+                    badgeType={badgeType}
+                    labelStyle={labelStyle}
+                  />
                 )
               }
             </div>
+            <p className="mt-2 text-sm text-ink-500">
+              {getLink() ? 'Your live badge.' : 'Sample preview. Add a URL to load your real badge.'}
+            </p>
           </div>
-        </div>
+
+          <div>
+            <h2 className="font-heading text-2xl font-bold text-ink-900">The code for you to use</h2>
+            <p className="mt-1 mb-4 text-base text-ink-500">
+              You can use the generated Markdown code or image URL in any of your projects.
+            </p>
+
+            <Snippets snippets={[
+              { title: `Markdown`, value: getMarkdownCode() },
+              { title: `Markdown with status link`, value: getMarkdownCodeWithStatus() },
+              { title: `HTML`, value: getHtmlLink() },
+              { title: `Image URL`, value: getLink() }
+            ]} />
+          </div>
+        </section>
       </div>
     </Page>
   </>;
